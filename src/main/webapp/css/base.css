@@ -1,0 +1,98 @@
+* {    
+	vertical-align: baselinebaseline;    
+	font-weight: inherit;    
+	font-family: inherit;    
+	font-style: inherit;    
+	font-size: 100%;   
+	padding: 0;    
+	margin: 0;    
+ }
+*html/**/ >body{
+	color: #333;
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif, "宋体";
+	padding:0;
+	margin:0 auto;
+}
+body{
+	text-align: center;
+	color: #333;
+	font-size:12px;
+	font-family:Arial, Helvetica, sans-serif, "宋体";
+	background-color:#D9D9D9;
+	padding:0;
+	margin:0 auto;
+}
+div{
+   margin:0 auto;
+   padding:0;
+   text-align:left;
+}
+a{
+   color:#000;
+   text-decoration:none;
+}
+a:hover{
+   color:#333;
+   text-decoration:none;
+}
+a img { 
+border: 0; 
+} 
+a:hover img { 
+border: 0; 
+}
+ul, li{
+  list-style-type:none;
+  padding:0;
+  margin:0 auto;
+}
+dt, dd{
+  list-style-type:none;
+  padding:0;
+  margin:0 auto;
+}
+h1,h2,h3,h4,h5,h6{
+  padding:0;
+  margin:0 auto;
+  font-family:"宋体";
+  font-weight:normal;
+}
+form{
+  padding:0;
+  margin:0 auto;
+}
+.clear{
+   clear:both;
+   width:1px;
+   height:1px;
+   display:block;
+}
+.table-line{
+   border:3px solid #eeeeee;
+}
+td,tr{
+   padding:5px 0 5px 3px;
+}
+h1{
+	width:600px;
+	font-size:27px;
+	color:#fff;
+	text-align: left;
+	font-weight:bold;
+	float:left;
+	padding:10px 0 0 7px;
+	font-family:"黑体";
+}
+h2{
+   font-size:18px;
+   font-weight:bold;
+   color:#c00;
+   *color:#c00;
+}
+h3{
+   color:#006633;
+   font-size:14px;
+   font-weight:bold;
+   
+}

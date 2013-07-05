@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="MyLibrary_Maven"
+  id="myeclipse.1371715151678"
+  context-root="/Web_mvc_04ResponseBody"
+  j2ee-spec="1.7"
+  archive="MyLibrary_Maven.war">
+  <attributes>
+    <attribute name="webrootdir" value="src/main/webapp" />
+  </attributes>
+</project-module>
+
