@@ -1,5 +1,8 @@
 package org.library.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -7,17 +10,23 @@ import java.util.Set;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.io.FileUtils;
 import org.library.dao.UserDao;
 import org.library.model.Info;
 import org.library.model.Profession;
 import org.library.model.User;
 import org.library.service.UserService;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.google.gson.Gson;
 
@@ -109,9 +118,7 @@ public class UserController
 	 */
 	@RequestMapping(value="/ajaxRegister.htm",produces="text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
-	public String register(String username, String password,  String repassword,
-			String email,  String name,String gender,  String unit,
-			 String mobilePhone, HttpSession session, ModelMap model)
+	public String register(@ModelAttribute User user, HttpSession session, ModelMap model)
 	{
 		Gson gson = new Gson();
 		Info info = new Info();
@@ -120,6 +127,13 @@ public class UserController
 		String result = "";
 
 		System.out.println("started register"); 
+		
+		String username = user.getUsername();
+		String ps = user.getPassword();
+		String reps = user.getRepassword();
+		String email = user.getEmail();
+		String name = user.getName();
+		String unit = user.getUnit();
 		
 		if (null == username || "".equals(username))
 		{
@@ -130,11 +144,11 @@ public class UserController
 			result += " 用户名长度应该是4和10之间！";
 		}
 		// 密码的长度均须在4---10之间
-		if (!password.equals(repassword))
+		if (!ps.equals(reps))
 		{
 			result += "密码不一致！";
 		}
-		if (password == null || password.length() < 4 || password.length() > 10)
+		if (ps == null || ps.length() < 4 || ps.length() > 10)
 		{
 			result += "密码的长度须在4---10之间！";
 		}
@@ -153,15 +167,6 @@ public class UserController
 
 		if (result == "")
 		{
-			User user = new User();
-
-			user.setEmail(email);
-			user.setName(name);
-			user.setUsername(username);
-			user.setPassword(password);
-			user.setGender(gender);
-			user.setUnit(unit);
-			user.setMobilePhone(mobilePhone);
 			user.setRole("student");// 默认角色的参数
 
 			UserService.register(user);// 注册
@@ -221,6 +226,34 @@ public class UserController
 		jsontext = gson.toJson(info);
 		
 		return jsontext;
+	}
+	
+	/**
+	 * 
+	 * @param photo
+	 * @param req
+	 * @param session
+	 * @param model
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/user/upload.htm", method = RequestMethod.POST)
+	public String upload(MultipartFile photo, HttpSession session, ModelMap model) throws IOException
+	{
+		User user = (User)session.getAttribute("user");
+		
+		System.out.println(photo.getContentType() + "," + photo.getName() + "," + photo.getOriginalFilename());
+		
+		String realpath = "D:\\MyLibrary/upload/" + user.getUsername() + "/";
+		System.out.println(realpath);
+		
+		String value = photo.getOriginalFilename();
+		String fileName = "photo" + value.substring(value.length() - 4);
+		
+		FileUtils.copyInputStreamToFile(photo.getInputStream(), new File(realpath + fileName));
+		
+		model.addAttribute("result", "头像上传成功!");
+		return "/success";
 	}
 	
 	/**
@@ -360,5 +393,20 @@ public class UserController
 
 		model.addAttribute("result", "个人信息修改成功，");
 		return "success";
+	}
+	
+	@RequestMapping("/outputImage")
+	public void outputImage(OutputStream outputStream)
+	{
+		Resource res = new ClassPathResource("/image.jpg");
+	    
+	    try
+		{
+			FileCopyUtils.copy(res.getInputStream(), outputStream);//读取类路径下的图片文件
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//将图片写到输出流中
 	}
 }
