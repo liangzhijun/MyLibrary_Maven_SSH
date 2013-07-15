@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
-import org.library.dao.UserDao;
 import org.library.model.Info;
 import org.library.model.Profession;
 import org.library.model.User;
 import org.library.service.UserService;
+import org.library.serviceImpl.UserServiceImpl;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -28,11 +28,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import com.google.gson.Gson;
 
 @Controller
 public class UserController
 {	
+	UserService userService = new UserServiceImpl();
+	
 	/**
 	 * 用户登录验证
 	 * 
@@ -46,7 +49,7 @@ public class UserController
 	public String loginAjax(@RequestParam String username,		
 			@RequestParam String password, HttpSession session)					
 	{
-		User user = UserDao.findUser(username);
+		User user = userService.findUser(username);
 		Gson gson = new Gson();
 		Info info = new Info();
 		String jsontext;
@@ -169,12 +172,12 @@ public class UserController
 		{
 			user.setRole("student");// 默认角色的参数
 
-			UserService.register(user);// 注册
+			userService.register(user);// 注册
 
 			session.setAttribute("result", "注册成功！");
 			
 			info.setStatus(200);
-			info.setUri("/success.jsp");
+			info.setUri("/registerSuccess.jsp");
 			jsontext = gson.toJson(info);
 			
 			return jsontext;
@@ -213,7 +216,7 @@ public class UserController
 			
 			return jsontext;
 		}
-		if(UserDao.findUser(username) == null)
+		if(userService.findUser(username) == null)
 		{
 			info.setStatus(200);
 			jsontext = gson.toJson(info);
@@ -268,7 +271,7 @@ public class UserController
 		Gson gson = new Gson();
 		String jsontext;
 		
-		Set<Profession> profession = UserDao.findAcademy(academy);
+		Set<Profession> profession = userService.findAcademy(academy);
 		int size = profession.size();
 		
 		Map<Object, Object> map = new HashMap<Object, Object>();
@@ -294,7 +297,7 @@ public class UserController
 		Gson gson = new Gson();
 		String jsontext;
 		
-		map = UserDao.findProfession(academy, profession);
+		map = userService.findProfession(academy, profession);
 		jsontext = gson.toJson(map);
 		
 		return jsontext;
@@ -312,8 +315,7 @@ public class UserController
 	@RequestMapping(value = "/changePasswd.htm",produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String changePasswd(@RequestParam String password,
-			@RequestParam String newPassword, @RequestParam String repassword, HttpSession session,
-			ModelMap model)
+			@RequestParam String newPassword, @RequestParam String repassword, HttpSession session)
 	{
 		Gson gson = new Gson();
 		Info info = new Info();
@@ -351,12 +353,13 @@ public class UserController
 		else
 		{
 			String username = user.getUsername();
-			UserDao.changePasswd(username, repassword);
+			
+			userService.changePasswd(username, repassword);
 
 			user.setPassword(newPassword);
 		}
 
-		model.addAttribute("result", "成功修改密码！");
+		session.setAttribute("result", "成功修改密码！");
 		
 		info.setStatus(200);
 		info.setUri("/success.jsp");
@@ -377,15 +380,15 @@ public class UserController
 	 * @return
 	 */
 	@RequestMapping(value = "/modifyUserinfo.htm", method = RequestMethod.POST)
-	public String modifyUserinfo(@RequestParam String mobilePhone,
-			@RequestParam String phone, @RequestParam String address,
+	public String modifyUserinfo(@RequestParam String mobilePhone,@RequestParam String phone, @RequestParam String address,
 			@RequestParam String email, HttpSession session, ModelMap model, HttpServletResponse resp)
 	{
 		User user = (User) session.getAttribute("user");
 
 		String username = user.getUsername();
 
-		UserDao.modifyUserinfo(username, mobilePhone, phone, address, email);
+		userService.modifyUserinfo(username, mobilePhone, phone, address, email);
+		
 		user.setMobilePhone(mobilePhone);
 		user.setPhone(phone);
 		user.setAddress(address);
