@@ -1,10 +1,12 @@
 package org.library.model;
 
+
 public class User
 {
 	private String name;
 	private String username;
 	private String password;
+	private String repassword;
 	private String email;
 	private String gender;
 	private String unit;
@@ -16,6 +18,15 @@ public class User
 	private String type;
 	private String role;
 	
+	
+	public String getRepassword()
+	{
+		return repassword;
+	}
+	public void setRepassword(String repassword)
+	{
+		this.repassword = repassword;
+	}
 	public String getRole()
 	{
 		return role;
