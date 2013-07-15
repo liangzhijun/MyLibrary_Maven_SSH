@@ -21,8 +21,7 @@ public class BookDao
 			Class.forName("com.mysql.jdbc.Driver");
 			// new com.mysql.jdbc.Driver();
 
-			conn = DriverManager.getConnection(
-					"jdbc:mysql://127.0.0.1:3306/mylibrary", "root", "root");
+			conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/mylibrary", "root", "root");
 		}
 		catch (Exception e)
 		{
@@ -388,7 +387,6 @@ public class BookDao
 		}
 
 		return null;
-	
 	}
 	
 	/**
@@ -400,7 +398,6 @@ public class BookDao
 		ResultSet rs = null;
 		Statement stmt = null;
 		List<Book> list = new ArrayList<Book>();
-		
 			
 		try
 		{
@@ -458,9 +455,7 @@ public class BookDao
 				e.printStackTrace();
 			}
 		}
-
 		return null;
-	
 	}
 	
 }

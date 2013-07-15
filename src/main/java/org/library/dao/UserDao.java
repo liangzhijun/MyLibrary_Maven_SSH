@@ -6,10 +6,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,6 +17,16 @@ import org.library.model.User;
 public class UserDao
 {
 	private static Connection conn = null;
+
+	public static Connection getConn()
+	{
+		return conn;
+	}
+
+	public static void setConn(Connection conn)
+	{
+		UserDao.conn = conn;
+	}
 
 	static
 	{
@@ -49,7 +57,7 @@ public class UserDao
 		{
 
 			pstmt = conn
-					.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+					.prepareStatement("insert into user values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			pstmt.setString(1, user.getUsername());
 			pstmt.setString(2, user.getPassword());
@@ -64,6 +72,7 @@ public class UserDao
 			pstmt.setString(11, "2000030536");
 			pstmt.setString(12, "本科生");
 			pstmt.setString(13, user.getRole());
+			pstmt.setString(14, null);
 			
 			
 			pstmt.executeUpdate();
@@ -288,7 +297,7 @@ public class UserDao
 	 * @param changePasswd 
 	 * @return
 	 */
-	public static User changePasswd(String myUsername, String newPassword)
+	public static ResultSet changePasswd(String sql)
 	{
 		ResultSet rs = null;
 		Statement stmt = null;
@@ -297,42 +306,14 @@ public class UserDao
 		{
 			stmt = conn.createStatement( ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			
-			rs = stmt.executeQuery("select * from user WHERE username='" + myUsername + "'");
-
-			rs.next();
-				
-			//更新一行数据
-			rs.updateString("password", newPassword);
-			rs.updateRow();
-			
+			rs = stmt.executeQuery(sql);
 		}
 		catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
-		finally
-		{
-			try
-			{
-				if (rs != null)
-				{
-					rs.close();
-					rs = null;
-				}
-
-				if (stmt != null)
-				{
-					stmt.close();
-					stmt = null;
-				}
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-		}
-
-		return null;
+		
+		return rs;
 	}
 	
 	/**
@@ -391,4 +372,5 @@ public class UserDao
 		
 		return null;
 	}
+	
 }
