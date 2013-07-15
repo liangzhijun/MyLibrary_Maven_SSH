@@ -8,9 +8,11 @@ import org.library.dao.BookDao;
 import org.library.model.Book;
 import org.library.model.User;
 import org.library.service.UserService;
+import org.library.serviceImpl.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AdminController
 {
+	UserService userService = new UserServiceImpl();
+	
 	/**
 	 * 管理者注册
 	 * @param username
@@ -34,14 +38,17 @@ public class AdminController
 	 */
 	@RequestMapping(value = "/adminRegister.htm")
 	@ResponseBody
-	public String adminRegister(@RequestParam String username,
-			@RequestParam String password, @RequestParam String repassword,
-			@RequestParam String email, @RequestParam String name,
-			@RequestParam String gender, @RequestParam String unit,
-			@RequestParam String mobilePhone, HttpSession session, Model model)
+	public String adminRegister(@ModelAttribute User user, HttpSession session, Model model)
 	{
 		String result = "";
 
+		String username = user.getUsername();
+		String ps = user.getPassword();
+		String reps = user.getRepassword();
+		String email = user.getEmail();
+		String name = user.getName();
+		String unit = user.getUnit();
+		
 		if (null == username || "".equals(username))
 		{
 			result += " 用户名不可以为空！";
@@ -51,11 +58,11 @@ public class AdminController
 			result += " 用户名长度应该是4和10之间！";
 		}
 		// 密码的长度均须在4---10之间
-		if (!password.equals(repassword))
+		if (!ps.equals(reps))
 		{
 			result += "密码不一致！";
 		}
-		if (password == null || password.length() < 4 || password.length() > 10)
+		if (ps == null || ps.length() < 4 || ps.length() > 10)
 		{
 			result += "密码的长度须在4---10之间";
 		}
@@ -67,21 +74,17 @@ public class AdminController
 		{
 			result += "姓名不可以为空！";
 		}
+		if(null == unit || "".equals(unit))
+		{
+			result += "单位必需要填写！";
+		}
+		
 
 		if (result == "")
 		{
-			User user = new User();
-
-			user.setEmail(email);
-			user.setName(name);
-			user.setUsername(username);
-			user.setPassword(password);
-			user.setGender(gender);
-			user.setUnit(unit);
-			user.setMobilePhone(mobilePhone);
 			user.setRole("admin");// 默认角色的参数
 
-			UserService.register(user);// 注册
+			userService.register(user);// 注册
 
 			session.setAttribute("result", "注册成功！");
 			
@@ -112,78 +115,60 @@ public class AdminController
 	 * @return "result";
 	 */
 	@RequestMapping(value = "/booksEntering.htm ", method = RequestMethod.POST)
-	public String booksEntering(@RequestParam String title,
-			@RequestParam String author, @RequestParam String publisher,
-			@RequestParam String callNumber,
-			@RequestParam String ISBNandPricing, @RequestParam String subject,
-			@RequestParam String page, @RequestParam String list,
-			@RequestParam String content, @RequestParam String barcode,
-			@RequestParam String condition, @RequestParam String lib,
+	public String booksEntering(@ModelAttribute Book book,
 			Model model)
 	{
 		String result = "";
 
+		String title = book.getTitle();
+		String author = book.getAuthor();
+		String publisher = book.getPublisher();
+		String callNumber = book.getCallNumber();
+		String ISBNandPricing = book.getISBNandPricing();
+		String subject = book.getSubject();
+		String page = book.getPage();
+		String list = book.getList();
+		String content = book.getContent();
+		
 		if (null == title || "".equals(title))
 		{
 			result += "题名必须要填写! ";
 		}
-
 		if (null == author || "".equals(author))
 		{
 			result += "责任者必须要填写！";
 		}
-
 		if (null == publisher || "".equals(publisher))
 		{
 			result += "出版社必须要填写！";
 		}
-
 		if (null == callNumber || "".equals(callNumber))
 		{
 			result += "索引号必须要填写! ";
 		}
-
 		if (null == ISBNandPricing || "".equals(ISBNandPricing))
 		{
 			result += "ISBN及定价必须要填写！";
 		}
-
 		if (null == subject || "".equals(subject))
 		{
 			result += "科学主题必须要填写！";
 		}
-
 		if (null == page || "".equals(page))
 		{
 			result += "载体形态项必须要填写！";
 		}
-
 		if (null == list || "".equals(list))
 		{
 			result += "书目录必须要填写！";
 		}
-
 		if (null == content || "".equals(content))
 		{
 			result += "内容简介必须要填写！";
 		}
-
+		
 		if (result == "")
 		{
-			Book book = new Book();
-
-			book.setTitle(title);
-			book.setAuthor(author);
-			book.setPublisher(publisher);
-			book.setCallNumber(callNumber);
-			book.setISBNandPricing(ISBNandPricing);
-			book.setSubject(subject);
-			book.setPage(page);			book.setList(list);
-			book.setContent(content);
-			book.setBarcode(barcode);
-			book.setCondition(condition);
-			book.setLib(lib);
-
 			BookDao.modifyBook(book);// 将书目信息存入数据库
 
 			model.addAttribute("result", "成功录入书目");
@@ -280,79 +265,75 @@ public class AdminController
 	 * @return
 	 */
 	@RequestMapping(value="modifyBook.htm", method = RequestMethod.POST)
-	public String modifyBook(@RequestParam String title,
-			@RequestParam String author, @RequestParam String publisher,
-			@RequestParam String callNumber,
-			@RequestParam String ISBNandPricing, @RequestParam String subject,
-			@RequestParam String page, @RequestParam String list,
-			@RequestParam String content, @RequestParam String barcode,
-			@RequestParam String condition, @RequestParam String lib,
+	public String modifyBook(@ModelAttribute Book book,
 			Model model)
 	{
 		String result = "";
 
+		String title = book.getTitle();
+		String author = book.getAuthor();
+		String publisher = book.getPublisher();
+		String callNumber = book.getCallNumber();
+		String ISBNandPricing = book.getISBNandPricing();
+		String subject = book.getSubject();
+		String page = book.getPage();
+		String list = book.getList();
+		String content = book.getContent();
+		String barcode = book.getBarcode();
+		String condition = book.getCondition();
+		String lib = book.getLib();
+		
 		if (null == title || "".equals(title))
 		{
 			result += "题名必须要填写! ";
 		}
-
 		if (null == author || "".equals(author))
 		{
 			result += "责任者必须要填写！";
 		}
-
 		if (null == publisher || "".equals(publisher))
 		{
 			result += "出版社必须要填写！";
 		}
-
 		if (null == callNumber || "".equals(callNumber))
 		{
 			result += "索引号必须要填写! ";
 		}
-
 		if (null == ISBNandPricing || "".equals(ISBNandPricing))
 		{
 			result += "ISBN及定价必须要填写！";
 		}
-
 		if (null == subject || "".equals(subject))
 		{
 			result += "科学主题必须要填写！";
 		}
-
 		if (null == page || "".equals(page))
 		{
 			result += "载体形态项必须要填写！";
 		}
-
 		if (null == list || "".equals(list))
 		{
 			result += "书目录必须要填写！";
 		}
-
 		if (null == content || "".equals(content))
 		{
 			result += "内容简介必须要填写！";
 		}
+		if(null == barcode || "".equals(barcode))
+		{
+			result += "条形码必须要填写！";
+		}
+		if (null == condition || "".equals(condition))
+		{
+			result += "书刊状态必须要填写！";
+		}
+		if(null == lib || "".equals(lib))
+		{
+			result += "馆藏地必须要填写！";
+		}	
 
 		if (result == "")
 		{
-			Book book = new Book();
-
-			book.setTitle(title);
-			book.setAuthor(author);
-			book.setPublisher(publisher);
-			book.setCallNumber(callNumber);
-			book.setISBNandPricing(ISBNandPricing);
-			book.setSubject(subject);
-			book.setPage(page);
-			book.setList(list);
-			book.setContent(content);
-			book.setBarcode(barcode);
-			book.setCondition(condition);
-			book.setLib(lib);
-
 			BookDao.saveBook(book);// 将书目信息存入数据库
 
 			model.addAttribute("result", "图书修改成功");
