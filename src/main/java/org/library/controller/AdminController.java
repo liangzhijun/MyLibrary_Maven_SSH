@@ -7,7 +7,11 @@ import javax.servlet.http.HttpSession;
 import org.library.dao.BookDao;
 import org.library.model.Book;
 import org.library.model.User;
+import org.library.service.AdminService;
+import org.library.service.LibraryService;
 import org.library.service.UserService;
+import org.library.serviceImpl.AdminServiceImpl;
+import org.library.serviceImpl.LibraryServiceImpl;
 import org.library.serviceImpl.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +26,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class AdminController
 {
 	UserService userService = new UserServiceImpl();
+	AdminService adminService = new AdminServiceImpl();
+	LibraryService libraryService = new LibraryServiceImpl();
 	
 	/**
 	 * 管理者注册
@@ -169,7 +175,7 @@ public class AdminController
 		
 		if (result == "")
 		{
-			BookDao.modifyBook(book);// 将书目信息存入数据库
+			adminService.saveBook(book);// 将书目信息存入数据库
 
 			model.addAttribute("result", "成功录入书目");
 			return "result";
@@ -205,7 +211,7 @@ public class AdminController
 	public String SearchDeleteBooks(@RequestParam String strText,
 			@RequestParam String strSearchType, Model model)
 	{
-		List<Book> list = BookDao.search(strText, strSearchType);
+		List<Book> list = libraryService.searchBooks(strText, strSearchType);
 
 		if (list != null)
 		{
@@ -219,15 +225,13 @@ public class AdminController
 	}
 	
 	/** 删除书本
-	 * 
 	 * @param barcode
-	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value="deleteBook.htm", method = RequestMethod.GET)
-	public String deleteBook(@RequestParam String barcode, Model model)
+	public String deleteBook(@RequestParam String barcode)
 	{
-		BookDao.deleteBook(barcode);
+		adminService.deleteBook(barcode);
 		
 		return "redirect:/deleteBooks.htm";
 	}
@@ -239,10 +243,11 @@ public class AdminController
 	 * @return
 	 */
 	@RequestMapping(value="modifyBooks.htm")
-	public String modifyBooks(@RequestParam String barcode, ModelMap model)
+	public String modifyBooks(@RequestParam String barcode, HttpSession session, ModelMap model)
 	{
 		Book book = BookDao.getBookinfo(barcode);
 		model.addAttribute("book", book);
+		session.setAttribute("oldBarcode", barcode);	//将barcode以oldBarcode为name放到session中，作为修改书本的索引
 		
 		return "modifyBook";
 	}
@@ -265,8 +270,7 @@ public class AdminController
 	 * @return
 	 */
 	@RequestMapping(value="modifyBook.htm", method = RequestMethod.POST)
-	public String modifyBook(@ModelAttribute Book book,
-			Model model)
+	public String modifyBook(@ModelAttribute Book book, HttpSession session, Model model)
 	{
 		String result = "";
 
@@ -334,7 +338,7 @@ public class AdminController
 
 		if (result == "")
 		{
-			BookDao.saveBook(book);// 将书目信息存入数据库
+			adminService.modifyBook(book, (String)session.getAttribute("oldBarcode"));// 将书目信息存入数据库
 
 			model.addAttribute("result", "图书修改成功");
 			return "result";
