@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
-import org.library.dao.BookDao;
 import org.library.model.Book;
 import org.library.model.User;
 import org.library.service.AdminService;
@@ -194,7 +193,7 @@ public class AdminController
 	@RequestMapping("deleteBooks.htm")
 	public String deleteBooks(Model model)
 	{
-		List<Book> list = BookDao.findBooks();
+		List<Book> list = libraryService.getAllBooks();
 		model.addAttribute("list", list);
 		
 		return "deleteBooks";
@@ -245,7 +244,7 @@ public class AdminController
 	@RequestMapping(value="modifyBooks.htm")
 	public String modifyBooks(@RequestParam String barcode, HttpSession session, ModelMap model)
 	{
-		Book book = BookDao.getBookinfo(barcode);
+		Book book = libraryService.getBookinfo(barcode);
 		model.addAttribute("book", book);
 		session.setAttribute("oldBarcode", barcode);	//将barcode以oldBarcode为name放到session中，作为修改书本的索引
 		

@@ -100,12 +100,12 @@ body {
 					<tr>
 						<td colspan="3" align="right">
 						
-						<a href = "/change_passwd.jsp" >
+						<a href = "/adminChange_passwd.jsp" >
 						<input type="button"
 							class="select" value="修改个人密码"> 
 						</a>
 	
-						<a href = "/modifyuserinfo.jsp" >
+						<a href = "/adminModifyuserinfo.jsp" >
 						<input type="button"
 							class="select" value="修改联系信息"> 
 						</a>

@@ -2,9 +2,9 @@ package org.library.controller;
 
 import java.util.List;
 
-
-import org.library.dao.BookDao;
 import org.library.model.Book;
+import org.library.service.LibraryService;
+import org.library.serviceImpl.LibraryServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class LibraryController
 {	
+	 LibraryService libraryService = new LibraryServiceImpl();
+	
 	@RequestMapping(value = "/myLibrary.htm")
 	public String myLibrary()
 	{
@@ -31,7 +33,7 @@ public class LibraryController
 			@RequestParam String strSearchType, Model model)
 	{
 		//从数据访问层获得数据，通过搜索，没有数据返回null`
-		List<Book> bookList = BookDao.search(strText, strSearchType);	
+		List<Book> bookList = libraryService.searchBooks(strText, strSearchType);	
 
 		if (bookList != null)
 		{
@@ -52,7 +54,7 @@ public class LibraryController
 	@RequestMapping(value = "/getBooks.htm")
 	public String getBooks(Model model)
 	{
-		List<Book> list = BookDao.findBooks();
+		List<Book> list = libraryService.getAllBooks();
 		model.addAttribute("list", list);
 		return "books";
 	}
@@ -66,8 +68,8 @@ public class LibraryController
 	@RequestMapping(value = "/bookinfo.htm")
 	public String bookinfo(@RequestParam String barcode,@RequestParam String title, Model model)
 	{
-		Book book = BookDao.getBookinfo(barcode);
-		List<Book> list = BookDao.bookinfos(title);
+		Book book = libraryService.getBookinfo(barcode);
+		List<Book> list = libraryService.bookinfos(title);
 
 		model.addAttribute("book", book);
 		model.addAttribute("list", list);

@@ -1,4 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,15 +57,17 @@ body {
 						</li>
 						<li><a href="#about">分类浏览</a>
 						</li>
-						<li><a href="#about">期刊导航</a>
-						</li>
-						<li><a href="#contact">新书通报</a>
+						<li><a href="/deleteBooks.htm">删除图书or修改图书</a>
 						</li>
 						<li><a href="/getBooks.htm" >图书目库</a>
 						</li>
 						<li><a href="/booksEntering.jsp">图书录入</a></li>
 						<li><a href="/adminLibrary.jsp">我的资料</a></li>
 					</ul>
+					<div style="color:#FFF; float:right; padding:5px 20px 0 0px">
+    					<c:if test="${sessionScope.status == null}"><a href="/signIn.jsp"><strong style="color:#fff;">登录</strong></a></c:if>
+    					<c:if test="${sessionScope.status == 'logined'}"><a href="/exit.htm"><strong style="color:#fff;">退出</strong></a></c:if>
+    				</div>
 				</div>
 				<!--/.nav-collapse -->
 			</div>

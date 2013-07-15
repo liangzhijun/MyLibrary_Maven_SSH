@@ -1,4 +1,3 @@
-<%@page import="org.library.model.User"%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
@@ -54,11 +53,17 @@ body {
 	
 	<div class="container">
 		<div id="mylib_content">
-			<h3 style="color: rgb(226, 106, 39)">${
-				sessionScope.user.name}：您好</h3>
+		
+			<form action="/user/upload.htm" method="post" enctype="multipart/form-data">
+			
 			<table width="100%" border="0" cellpadding="5" cellspacing="1"
 				style="padding:5px">
 				<tbody>
+					<tr>
+						<td align="left" id="successImg" ><img src="D:\MyLibrary\upload\10001\photo.jpg"  style="max-width: 30%;"></td>
+						<td> <h3 style="color: rgb(226, 106, 39)">${
+						sessionScope.user.name}：您好</h3> </td>
+					</tr>
 					<tr>
 						<td bgcolor="#FFFFFF"><span class="bluetext">读者证件号：</span> ${
 							sessionScope.user.username}</td>
@@ -95,9 +100,12 @@ body {
 							sessionScope.user.time}</td>
 						<td><span class="bluetext">生效日期：</span>${
 							sessionScope.user.time}</td>
+							
 					</tr>
 
 					<tr>
+						<td align="left">Photo: <input type="file" name="photo"> </td>
+							 
 						<td colspan="3" align="right">
 						
 						<a href = "/change_passwd.jsp" >
@@ -109,11 +117,14 @@ body {
 						<input type="button"
 							class="select" value="修改联系信息"> 
 						</a>
-						
+						</td>
+					</tr>
+					<tr> 
+						<td> <input type="submit" value="上传"> </td>
 					</tr>
 				</tbody>
 			</table>
-
+			</form>
 		</div>
 
 		</div>

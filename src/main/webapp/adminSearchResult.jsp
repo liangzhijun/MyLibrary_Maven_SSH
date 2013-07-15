@@ -61,13 +61,11 @@ body {
 				<a class="brand">书目检索系统</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li><a href="/Retrieval.jsp">书目检索</a>
+						<li><a href="/adminRetrieval.jsp">书目检索</a>
 						</li>
 						<li><a href="#about">分类浏览</a>
 						</li>
-						<li><a href="#about">期刊导航</a>
-						</li>
-						<li><a href="#contact">新书通报</a>
+						<li><a href="/deleteBooks.htm">删除图书or修改图书</a>
 						</li>
 						<li><a href="/getBooks.htm" >图书目库</a>
 						</li>

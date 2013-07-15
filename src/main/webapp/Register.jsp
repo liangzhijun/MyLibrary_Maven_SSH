@@ -169,6 +169,9 @@ function ajaxSubmit()
 				
 				if(status == 400)						//返回的是错误信息
 				{
+					//隐藏图片
+					document.getElementById("successImg").className = "hide";
+					
 					document.getElementById("td1").innerHTML = text.error;
 					return;
 				}
@@ -391,14 +394,5 @@ function ajaxSubmit()
 		<div id="div1"></div>
   		<input class="btn btn-large btn-primary" type="submit" value="submit">
   		
-  		</form>
-
-
-		</div>
-
-
-
-
-
 </body>
 </html>
