@@ -1,12 +1,14 @@
 package org.library.controller;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
@@ -16,11 +18,8 @@ import org.library.model.Profession;
 import org.library.model.User;
 import org.library.service.UserService;
 import org.library.serviceImpl.UserServiceImpl;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -398,18 +397,29 @@ public class UserController
 		return "success";
 	}
 	
-	@RequestMapping("/outputImage")
-	public void outputImage(OutputStream outputStream)
+	@RequestMapping("/outputImage.htm")
+	public void outputImage(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{
-		Resource res = new ClassPathResource("/image.jpg");
-	    
-	    try
-		{
-			FileCopyUtils.copy(res.getInputStream(), outputStream);//读取类路径下的图片文件
-		} catch (IOException e)
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}//将图片写到输出流中
+		User user = (User)req.getSession().getAttribute("user");
+		
+		String filePath = "D://MyLibrary/upload/" + user.getUsername() + "/photo.jpg";  
+        
+        FileInputStream is = new FileInputStream(filePath); // 以byte流的方式打开文件 d:\1.gif   
+        
+        resp.setContentType("image/*"); //设置返回的文件类型   
+       
+        resp.setHeader("Content-Disposition", "attachment; filename=\"photo.jpg\"");
+        
+        OutputStream os = resp.getOutputStream(); //得到向客户端输出二进制数据的对象   
+        
+        byte[] b = new byte[1024];
+ 		while (is.read(b) != -1)	//指定原始字节流大小
+ 		{
+ 			os.write(b);
+ 		}
+        os.flush();  
+        os.close();   
+        is.close();  
 	}
+	
 }

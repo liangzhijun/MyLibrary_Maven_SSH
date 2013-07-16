@@ -54,11 +54,15 @@ body {
 	
 	<div class="container">
 		<div id="mylib_content">
-			<h3 style="color: rgb(226, 106, 39)">${
-				sessionScope.user.name}：您好</h3>
 			<table width="100%" border="0" cellpadding="5" cellspacing="1"
 				style="padding:5px">
 				<tbody>
+					<tr>
+						<td align="left" id="successImg" ><img src="http://localhost:8080/outputImage.htm"  style="max-width: 30%;"></td>
+						<td> <h3 style="color: rgb(226, 106, 39)">${
+						sessionScope.user.name}：您好</h3> </td>
+					</tr>
+				
 					<tr>
 						<td bgcolor="#FFFFFF"><span class="bluetext">读者证件号：</span> ${
 							sessionScope.user.username}</td>
@@ -98,6 +102,8 @@ body {
 					</tr>
 
 					<tr>
+						<td align="left">Photo: <input type="file" name="photo"> </td>
+						
 						<td colspan="3" align="right">
 						
 						<a href = "/adminChange_passwd.jsp" >

@@ -60,7 +60,7 @@ body {
 				style="padding:5px">
 				<tbody>
 					<tr>
-						<td align="left" id="successImg" ><img src="D:\MyLibrary\upload\10001\photo.jpg"  style="max-width: 30%;"></td>
+						<td align="left" id="successImg" ><img src="http://localhost:8080/outputImage.htm"  style="max-width: 30%;"></td>
 						<td> <h3 style="color: rgb(226, 106, 39)">${
 						sessionScope.user.name}：您好</h3> </td>
 					</tr>
