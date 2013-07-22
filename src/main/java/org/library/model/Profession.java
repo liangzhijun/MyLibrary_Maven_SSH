@@ -1,21 +1,34 @@
 package org.library.model;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="profession")
 public class Profession
 {
-	private String profession;
 	private String id;
-	private String academyId;
-	private String academy;
+	private String profession;
+	private String academyName;
 	private int classlist;
+	private Academy academy;
 	
-	public String getProfession()
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="academyId")
+	public Academy getAcademy()
 	{
-		return profession;
+		return academy;
 	}
-	public void setProfession(String profession)
+	public void setAcademy(Academy academy)
 	{
-		this.profession = profession;
+		this.academy = academy;
 	}
+	@Id
 	public String getId()
 	{
 		return id;
@@ -24,21 +37,22 @@ public class Profession
 	{
 		this.id = id;
 	}
-	public String getAcademyId()
+	public String getProfession()
 	{
-		return academyId;
+		return profession;
 	}
-	public void setAcademyId(String academyId)
+	public void setProfession(String profession)
 	{
-		this.academyId = academyId;
+		this.profession = profession;
 	}
-	public String getAcademy()
+	@Column(name="academy")
+	public String getAcademyName()
 	{
-		return academy;
+		return academyName;
 	}
-	public void setAcademy(String academy)
+	public void setAcademyName(String academyName)
 	{
-		this.academy = academy;
+		this.academyName = academyName;
 	}
 	public int getClasslist()
 	{
