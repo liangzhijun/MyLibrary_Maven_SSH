@@ -14,9 +14,10 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.library.model.Info;
-import org.library.model.Profession;
 import org.library.model.User;
+import org.library.service.ProfessionService;
 import org.library.service.UserService;
+import org.library.serviceImpl.ProfessionServiceImpl;
 import org.library.serviceImpl.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -28,12 +29,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 @Controller
 public class UserController
 {	
 	UserService userService = new UserServiceImpl();
+	ProfessionService professionService = new ProfessionServiceImpl();
 	
 	/**
 	 * 用户登录验证
@@ -265,19 +268,24 @@ public class UserController
 	 */
 	@RequestMapping(value="select.htm", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
-	public String select(String academy)
+	public String select(String academy) throws IOException
 	{
-		Gson gson = new Gson();
+		//Gson gson = new Gson();
+		ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+		
 		String jsontext;
 		
-		Set<Profession> profession = userService.findAcademy(academy);
+		Set<Map<String, String>> profession = professionService.findAcademy(academy);
 		int size = profession.size();
 		
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		map.put("size", size);
 		map.put("profession", profession);
 		
-		jsontext = gson.toJson(map);
+		//jsontext = gson.toJson(map);
+		jsontext = mapper.writeValueAsString(map);
+		
+		System.out.println(jsontext);
 		
 		return jsontext;
 	}
@@ -296,7 +304,7 @@ public class UserController
 		Gson gson = new Gson();
 		String jsontext;
 		
-		map = userService.findProfession(academy, profession);
+		map = professionService.findProfession(academy, profession);
 		jsontext = gson.toJson(map);
 		
 		return jsontext;

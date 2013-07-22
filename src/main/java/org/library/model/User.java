@@ -1,6 +1,12 @@
 package org.library.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+@Entity
+@Table(name="user")
 public class User
 {
 	private String name;
@@ -17,8 +23,42 @@ public class User
 	private String idCare;
 	private String type;
 	private String role;
+	private String logoUrl;
 	
-	
+	@Id
+	@Column(name="username")
+	public String getUsername()
+	{
+		return username;
+	}
+	public void setUsername(String username)
+	{
+		this.username = username;
+	}
+	public String getPassword()
+	{
+		return password;
+	}
+	public void setPassword(String password)
+	{
+		this.password = password;
+	}
+	public String getUnit()
+	{
+		return unit;
+	}
+	public void setUnit(String unit)
+	{
+		this.unit = unit;
+	}
+	public String getPhone()
+	{
+		return phone;
+	}
+	public void setPhone(String phone)
+	{
+		this.phone = phone;
+	}
 	public String getRepassword()
 	{
 		return repassword;
@@ -99,37 +139,13 @@ public class User
 	{
 		this.name = name;
 	}
-	public String getUsername()
+	public String getLogoUrl()
 	{
-		return username;
+		return logoUrl;
 	}
-	public void setUsername(String username)
+	public void setLogoUrl(String logoUrl)
 	{
-		this.username = username;
-	}
-	public String getPassword()
-	{
-		return password;
-	}
-	public void setPassword(String password)
-	{
-		this.password = password;
-	}
-	public String getUnit()
-	{
-		return unit;
-	}
-	public void setUnit(String unit)
-	{
-		this.unit = unit;
-	}
-	public String getPhone()
-	{
-		return phone;
-	}
-	public void setPhone(String phone)
-	{
-		this.phone = phone;
+		this.logoUrl = logoUrl;
 	}
 	
 }

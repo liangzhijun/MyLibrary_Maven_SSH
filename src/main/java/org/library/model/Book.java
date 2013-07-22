@@ -1,5 +1,12 @@
 package org.library.model;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="library")
 public class Book
 {
 	private String title;
@@ -15,15 +22,8 @@ public class Book
 	private String barcode;
 	private String condition;
 	
-	
-	public String getLib()
-	{
-		return lib;
-	}
-	public void setLib(String lib)
-	{
-		this.lib = lib;
-	}
+	@Id
+	@Column(name="barcode")
 	public String getBarcode()
 	{
 		return barcode;
@@ -31,6 +31,15 @@ public class Book
 	public void setBarcode(String barcode)
 	{
 		this.barcode = barcode;
+	}
+
+	public String getLib()
+	{
+		return lib;
+	}
+	public void setLib(String lib)
+	{
+		this.lib = lib;
 	}
 	public String getCondition()
 	{

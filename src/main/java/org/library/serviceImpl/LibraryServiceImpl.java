@@ -1,11 +1,8 @@
 package org.library.serviceImpl;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.library.dao.BookDao;
+import org.hibernate.Query;
+import org.library.dao.Dao;
 import org.library.model.Book;
 import org.library.service.LibraryService;
 
@@ -19,60 +16,12 @@ public class LibraryServiceImpl implements LibraryService
 	@Override
 	public List<Book> searchBooks(String strText, String strSearchType)
 	{
-		List<Book> list = new ArrayList<Book>();
-		String sql = "select * from library WHERE " + strSearchType + " LIKE '" + "%" + strText + "%" + "'";
+		String ql = "from Book b where b." + strSearchType + " like '%" + strText + "%'";
+		Query q = Dao.createQuery(ql);
 		
-		ResultSet rs = BookDao.executeQuery(sql);
+		List<Book> list = (List<Book>)q.list();
 		
-		try {
-		
-			while(rs.next())
-			{
-				// 从数据库遍历书籍	
-				Book book = new Book();
-				
-				book.setTitle(rs.getString("title"));
-				book.setAuthor(rs.getString("author"));
-				book.setPublisher(rs.getString("publisher"));
-				book.setCallNumber(rs.getString("callNumber"));
-				book.setISBNandPricing(rs.getString("ISBNandPricing"));
-				book.setSubject(rs.getString("subject"));
-				book.setPage(rs.getString("page"));
-				book.setList(rs.getString("list"));
-				book.setContent(rs.getString("content"));
-				book.setLib(rs.getString("lib"));
-				book.setBarcode(rs.getString("barcode"));
-				book.setCondition(rs.getString("condition"));
-				
-				list.add(book);;
-			}
-			
-			if(list.isEmpty())
-				return null;
-			
-			else return list;
-	
-		}
-		catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (rs != null)
-				{
-					rs.close();
-					rs = null;
-				}
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return null;
+		return list;
 	}
 
 	/**
@@ -84,49 +33,9 @@ public class LibraryServiceImpl implements LibraryService
 	public Book getBookinfo(String barcode)
 	{
 		Book book = new Book();
-		String sql = "select * from library WHERE barcode='" + barcode + "'";
+		book = (Book)Dao.get(book, barcode);
 		
-		ResultSet rs = BookDao.executeQuery(sql);
-		
-		try {
-			if(rs.next())
-			{
-				// 从数据库遍历书籍	
-				book.setTitle(rs.getString("title"));
-				book.setAuthor(rs.getString("author"));
-				book.setPublisher(rs.getString("publisher"));
-				book.setCallNumber(rs.getString("callNumber"));
-				book.setISBNandPricing(rs.getString("ISBNandPricing"));
-				book.setSubject(rs.getString("subject"));
-				book.setPage(rs.getString("page"));
-				book.setList(rs.getString("list"));
-				book.setContent(rs.getString("content"));
-				book.setLib(rs.getString("lib"));
-				book.setBarcode(rs.getString("barcode"));
-				book.setCondition(rs.getString("condition"));
-			}
-			return book;
-		}
-		catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (rs != null)
-				{
-					rs.close();
-					rs = null;
-				}
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return null;
+		return book;
 	}
 
 	/**
@@ -136,50 +45,12 @@ public class LibraryServiceImpl implements LibraryService
 	@Override
 	public List<Book> bookinfos(String title)
 	{
-		List<Book> list = new ArrayList<Book>();
-		String sql = "select * from library WHERE title='" + title + "'";
+		String ql = "from Book b where b.title = " + title;
 		
-		ResultSet rs = BookDao.executeQuery(sql);
+		Query q = Dao.createQuery(ql);
+		List<Book> lists = (List<Book>)q.list();
 		
-		try {
-		
-			while (rs.next())
-			{
-				Book book = new Book();
-				
-				// 从数据库遍历书籍	
-				String callNumber = rs.getString("callNumber");
-				System.out.println(callNumber);
-				book.setCallNumber(rs.getString("callNumber"));
-				book.setLib(rs.getString("lib"));
-				book.setBarcode(rs.getString("barcode"));
-				book.setCondition(rs.getString("condition"));
-				
-				list.add(book);
-			}
-			
-			return list;
-		}
-		catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (rs != null)
-				{
-					rs.close();
-					rs = null;
-				}
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return null;
+		return lists;
 	}
 
 	/**
@@ -190,58 +61,10 @@ public class LibraryServiceImpl implements LibraryService
 	@Override
 	public List<Book> getAllBooks()
 	{
-		List<Book> list = new ArrayList<Book>();
-		String sql = "select * from library";
+		Query q = Dao.createQuery("from Book");
+		List<Book> books = (List<Book>)q.list();
 		
-		ResultSet rs = BookDao.executeQuery(sql);
-		
-		try {
-		
-			while (rs.next())
-			{
-				// 从数据库遍历书籍	
-				Book book = new Book();
-				String title = rs.getString("title");
-				
-				book.setTitle(title);
-				book.setAuthor(rs.getString("author"));
-				book.setPublisher(rs.getString("publisher"));
-				book.setCallNumber(rs.getString("callNumber"));
-				book.setISBNandPricing(rs.getString("ISBNandPricing"));
-				book.setSubject(rs.getString("subject"));
-				book.setPage(rs.getString("page"));
-				book.setList(rs.getString("list"));
-				book.setContent(rs.getString("content"));
-				book.setLib(rs.getString("lib"));
-				book.setBarcode(rs.getString("barcode"));
-				book.setCondition(rs.getString("condition"));
-				
-				
-				list.add(book);
-			}
-			
-			return list;
-		}
-		catch (SQLException e) {
-			
-			e.printStackTrace();
-		}
-		finally
-		{
-			try
-			{
-				if (rs != null)
-				{
-					rs.close();
-					rs = null;
-				}
-			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
-			}
-		}
-		return null;
+		return books;
 	}
 
 }
