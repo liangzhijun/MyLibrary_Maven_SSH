@@ -3,6 +3,7 @@ package org.library.controller;
 import java.util.List;
 
 import org.library.model.Book;
+import org.library.model.BookData;
 import org.library.service.LibraryService;
 import org.library.serviceImpl.LibraryServiceImpl;
 import org.springframework.stereotype.Controller;
@@ -35,7 +36,7 @@ public class LibraryController
 		//从数据访问层获得数据，通过搜索，没有数据返回null`
 		List<Book> bookList = libraryService.searchBooks(strText, strSearchType);	
 
-		if (bookList != null)
+		if (bookList != null && bookList.size() != 0)
 		{
 			model.addAttribute("bookList", bookList);
 			return "SearchResult";
@@ -54,8 +55,8 @@ public class LibraryController
 	@RequestMapping(value = "/getBooks.htm")
 	public String getBooks(Model model)
 	{
-		List<Book> list = libraryService.getAllBooks();
-		model.addAttribute("list", list);
+		List<Book> bookList = libraryService.getAllBooks();
+		model.addAttribute("bookList", bookList);
 		return "books";
 	}
 
@@ -66,10 +67,10 @@ public class LibraryController
 	 * @return "bookinfo.jsp"
 	 */
 	@RequestMapping(value = "/bookinfo.htm")
-	public String bookinfo(@RequestParam String barcode,@RequestParam String title, Model model)
+	public String bookinfo(@RequestParam String callNumber, Model model)
 	{
-		Book book = libraryService.getBookinfo(barcode);
-		List<Book> list = libraryService.bookinfos(title);
+		Book book = libraryService.getBookinfo(callNumber);
+		List<BookData> list = libraryService.bookinfos(callNumber);
 
 		model.addAttribute("book", book);
 		model.addAttribute("list", list);

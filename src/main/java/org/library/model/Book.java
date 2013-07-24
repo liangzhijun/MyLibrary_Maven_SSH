@@ -1,12 +1,18 @@
 package org.library.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="library")
+@Table(name="book")
 public class Book
 {
 	private String title;
@@ -18,36 +24,27 @@ public class Book
 	private String page;
 	private String list;
 	private String content;
-	private String lib;
-	private String barcode;
-	private String condition;
+	private int amount;
+	private Set<BookData> bookData =new HashSet<BookData>();
 	
+	@OneToMany(mappedBy="book", cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	public Set<BookData> getBookData()
+	{
+		return bookData;
+	}
+	public void setBookData(Set<BookData> bookData)
+	{
+		this.bookData = bookData;
+	}
 	@Id
-	@Column(name="barcode")
-	public String getBarcode()
+	@Column(name="callNamber")
+	public String getCallNumber()
 	{
-		return barcode;
+		return callNumber;
 	}
-	public void setBarcode(String barcode)
+	public void setCallNumber(String callNumber)
 	{
-		this.barcode = barcode;
-	}
-
-	public String getLib()
-	{
-		return lib;
-	}
-	public void setLib(String lib)
-	{
-		this.lib = lib;
-	}
-	public String getCondition()
-	{
-		return condition;
-	}
-	public void setCondition(String condition)
-	{
-		this.condition = condition;
+		this.callNumber = callNumber;
 	}
 	public String getTitle()
 	{
@@ -81,14 +78,6 @@ public class Book
 	{
 		this.publisher = publish;
 	}
-	public String getCallNumber()
-	{
-		return callNumber;
-	}
-	public void setCallNumber(String callNumber)
-	{
-		this.callNumber = callNumber;
-	}
 	public String getISBNandPricing()
 	{
 		return ISBNandPricing;
@@ -120,6 +109,14 @@ public class Book
 	public void setContent(String content)
 	{
 		this.content = content;
+	}
+	public int getAmount()
+	{
+		return amount;
+	}
+	public void setAmount(int amount)
+	{
+		this.amount = amount;
 	}
 	
 	

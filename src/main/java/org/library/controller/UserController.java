@@ -257,8 +257,8 @@ public class UserController
 		
 		FileUtils.copyInputStreamToFile(photo.getInputStream(), new File(realpath + fileName));
 		
-		model.addAttribute("result", "头像上传成功!");
-		return "/success";
+		//model.addAttribute("result", "头像上传成功!");
+		return "redirect:/myLibrary.jsp";
 	}
 	
 	/**
@@ -405,6 +405,12 @@ public class UserController
 		return "success";
 	}
 	
+	/**
+	 * 输出图片
+	 * @param req
+	 * @param resp
+	 * @throws IOException
+	 */
 	@RequestMapping("/outputImage.htm")
 	public void outputImage(HttpServletRequest req, HttpServletResponse resp) throws IOException
 	{

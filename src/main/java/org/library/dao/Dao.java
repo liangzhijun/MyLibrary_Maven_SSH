@@ -78,7 +78,18 @@ public class Dao
 		
 		Query q = s.createQuery(ql);
 		
+		s.getTransaction().commit();
 		return q; 
+	}
+	
+	public static Object createSQLQuery(Class c, String ql)
+	{
+		Session s = sessionFactory.getCurrentSession();
+		s.beginTransaction();
+		
+		Object ob = s.createSQLQuery(ql).addEntity(c).list();
+		s.getTransaction().commit();
+		return ob; 
 	}
 	
 	public static void afterClass() {

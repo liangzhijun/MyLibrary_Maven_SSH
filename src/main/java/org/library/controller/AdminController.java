@@ -282,9 +282,6 @@ public class AdminController
 		String page = book.getPage();
 		String list = book.getList();
 		String content = book.getContent();
-		String barcode = book.getBarcode();
-		String condition = book.getCondition();
-		String lib = book.getLib();
 		
 		if (null == title || "".equals(title))
 		{
@@ -322,19 +319,6 @@ public class AdminController
 		{
 			result += "内容简介必须要填写！";
 		}
-		if(null == barcode || "".equals(barcode))
-		{
-			result += "条形码必须要填写！";
-		}
-		if (null == condition || "".equals(condition))
-		{
-			result += "书刊状态必须要填写！";
-		}
-		if(null == lib || "".equals(lib))
-		{
-			result += "馆藏地必须要填写！";
-		}	
-
 		if (result == "")
 		{
 			adminService.modifyBook(book, (String)session.getAttribute("oldBarcode"));// 将书目信息存入数据库

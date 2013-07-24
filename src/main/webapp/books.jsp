@@ -1,6 +1,6 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+ 
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -79,15 +79,16 @@ body {
 					<td bgcolor="#d8d8d8" class="greytext" width="25%">题名</td>
 					<td bgcolor="#d8d8d8" class="greytext" width="15%">责任者</td>
 					<td bgcolor="#d8d8d8" class="greytext" width="20%">出版信息</td>
-					<td bgcolor="#d8d8d8" class="greytext" width="12%">索书号</td>
-					<td bgcolor="#d8d8d8" class="greytext" width="10%">浏览次数</td>
+					<td bgcolor="#d8d8d8" class="greytext" width="9%">索书号</td>
+					<td bgcolor="#d8d8d8" class="greytext" width="5%">数量</td>
+					<td bgcolor="#d8d8d8" class="greytext" width="8%">浏览次数</td>
 				</tr>
 			</table>
 				
 			<table border="1" width="100%" align="center" cellpadding="5"
 		cellspacing="0" bgcolor="#CCCCCC">
 
-		<c:forEach items="${list}" varStatus="i" var="item">
+		<c:forEach items="${bookList}" varStatus="i" var="item">
 			<c:if test="${i.index % 2 == 0}">
 				<tr align="center">
 			</c:if>
@@ -100,12 +101,13 @@ body {
 				<tr>
 					<td bgcolor="#FFFFFF" class="whitetext" width="3%">${i.index + 1} </td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="25%"><a class="blue"
-						href="/bookinfo.htm?barcode=${item.barcode}&title=${item.title}" >${item.title}</a>
+						href="/bookinfo.htm?callNumber=${item.callNumber}" >${item.title}</a>
 					</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="15%">${item.author}</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="20%">${item.publisher}</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="12%">${item.callNumber}</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="10%">1573</td>
+					<td bgcolor="#FFFFFF" class="whitetext" width="9%">${item.callNumber}</td>
+					<td bgcolor="#FFFFFF" class="whitetext" width="5%">${item.amount}</td>
+					<td bgcolor="#FFFFFF" class="whitetext" width="8%">1573</td>
 				</tr>
 			<tbody>
 		</c:forEach>

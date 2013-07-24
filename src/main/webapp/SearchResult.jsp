@@ -1,5 +1,3 @@
-<%@page import="org.library.dao.BookDao"%>
-<%@page import="org.library.model.Book"%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
@@ -136,7 +134,7 @@ body {
 				<tr>
 					<td bgcolor="#FFFFFF" class="whitetext" width="3%">${i.index + 1} </td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="25%"><a class="blue"
-						href="/bookinfo.htm?barcode=${item.barcode}&title=${item.title}" >${item.title}</a>
+						href="/bookinfo.htm?callNumber=${item.callNumber}">${item.title}</a>
 					</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="15%">${item.author}</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="20%">${item.publisher}</td>

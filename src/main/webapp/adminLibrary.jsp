@@ -1,7 +1,7 @@
 <%@page import="org.library.model.User"%>
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 
-<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%> 
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
@@ -54,6 +54,8 @@ body {
 	
 	<div class="container">
 		<div id="mylib_content">
+		<form action="/user/upload.htm" method="post" enctype="multipart/form-data">
+		
 			<table width="100%" border="0" cellpadding="5" cellspacing="1"
 				style="padding:5px">
 				<tbody>
@@ -103,7 +105,7 @@ body {
 
 					<tr>
 						<td align="left">Photo: <input type="file" name="photo"> </td>
-						
+						<td> <input type="submit" value="上传"> </td>
 						<td colspan="3" align="right">
 						
 						<a href = "/adminChange_passwd.jsp" >
@@ -120,6 +122,7 @@ body {
 				</tbody>
 			</table>
 
+		</form>
 			</div>
 
 		</div>

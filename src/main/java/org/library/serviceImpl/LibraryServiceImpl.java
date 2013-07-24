@@ -1,9 +1,9 @@
 package org.library.serviceImpl;
 import java.util.List;
 
-import org.hibernate.Query;
 import org.library.dao.Dao;
 import org.library.model.Book;
+import org.library.model.BookData;
 import org.library.service.LibraryService;
 
 public class LibraryServiceImpl implements LibraryService
@@ -16,10 +16,9 @@ public class LibraryServiceImpl implements LibraryService
 	@Override
 	public List<Book> searchBooks(String strText, String strSearchType)
 	{
-		String ql = "from Book b where b." + strSearchType + " like '%" + strText + "%'";
-		Query q = Dao.createQuery(ql);
+		String sql = "select * from book WHERE " + strSearchType + " LIKE '" + "%" + strText + "%" + "'";
 		
-		List<Book> list = (List<Book>)q.list();
+		List<Book> list = (List<Book>)Dao.createSQLQuery(Book.class, sql);
 		
 		return list;
 	}
@@ -30,10 +29,10 @@ public class LibraryServiceImpl implements LibraryService
 	 * @return
 	 */
 	@Override
-	public Book getBookinfo(String barcode)
+	public Book getBookinfo(String callNumber)
 	{
 		Book book = new Book();
-		book = (Book)Dao.get(book, barcode);
+		book = (Book)Dao.get(book, callNumber);
 		
 		return book;
 	}
@@ -43,12 +42,11 @@ public class LibraryServiceImpl implements LibraryService
 	 * @return List<Book>
 	 */
 	@Override
-	public List<Book> bookinfos(String title)
+	public List<BookData> bookinfos(String callNumber)
 	{
-		String ql = "from Book b where b.title = " + title;
+		String sql = "select * from bookdata WHERE callNumber='" + callNumber + "'";
 		
-		Query q = Dao.createQuery(ql);
-		List<Book> lists = (List<Book>)q.list();
+		List<BookData> lists = (List<BookData>)Dao.createSQLQuery(BookData.class, sql);
 		
 		return lists;
 	}
@@ -61,8 +59,8 @@ public class LibraryServiceImpl implements LibraryService
 	@Override
 	public List<Book> getAllBooks()
 	{
-		Query q = Dao.createQuery("from Book");
-		List<Book> books = (List<Book>)q.list();
+		
+		List<Book> books = (List<Book>)Dao.createSQLQuery(Book.class, "select * from book");
 		
 		return books;
 	}

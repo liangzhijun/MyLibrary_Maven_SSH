@@ -1,5 +1,5 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
 <!DOCTYPE HTML>
 <html>
 <head>
@@ -91,7 +91,7 @@ clear: both;
 		<div id="s_c_left">
 			<div class="itemtag">
 				<ul id="search_button">
-					<li id="search_buttonblue"><ahref="item.php?marc_no=0000194710">&nbsp;&nbsp;书目信息&nbsp;&nbsp;</a>
+					<li id="search_buttonblue"><a href="item.php?marc_no=0000194710">&nbsp;&nbsp;书目信息&nbsp;&nbsp;</a>
 					</li>
 				</ul>
 				<div class="itemtag_num"></div>
@@ -178,11 +178,11 @@ clear: both;
 			</c:if>
        	 <tbody>
           <tr>
-            <td align="center" class="whitetext" width="20%" bgcolor="#FFFFFF">${item.callNumber} </td>
+            <td align="center" class="whitetext" width="20%" bgcolor="#FFFFFF">${requestScope.book.callNumber} </td>
             <td align="center" class="whitetext" width="17%" bgcolor="#FFFFFF">${item.barcode}</td>
             <td align="center" class="whitetext" width="15%" bgcolor="#FFFFFF">2008&nbsp;</td>
-            <td align="center" class="whitetext" width="23%" bgcolor="#FFFFFF">${item.lib} </td>
-            <td align="center" class="whitetext" width="25%" bgcolor="#FFFFFF"><font color="green">${item.condition}</font></td>
+            <td align="center" class="whitetext" width="23%" bgcolor="#FFFFFF">${item.collection} </td>
+            <td align="center" class="whitetext" width="25%" bgcolor="#FFFFFF"><font color="green">${item.status}</font></td>
           </tr>
           
           </tbody>

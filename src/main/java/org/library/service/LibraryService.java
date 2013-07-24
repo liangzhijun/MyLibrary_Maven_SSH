@@ -3,6 +3,7 @@ package org.library.service;
 import java.util.List;
 
 import org.library.model.Book;
+import org.library.model.BookData;
 
 public interface LibraryService
 {
@@ -13,7 +14,7 @@ public interface LibraryService
 	public Book getBookinfo(String barcode);
 	
 	//从数据库遍历书籍，返回一书目的状态,数量等信息
-	public List<Book> bookinfos(String title);
+	public List<BookData> bookinfos(String title);
 	
 	//从数据库遍历书籍，把书籍以一个book对象逐个放到一个List的集合,然后将List返回
 	public List<Book> getAllBooks();
