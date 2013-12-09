@@ -4,21 +4,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.library.model.Info;
+import org.library.model.Profession;
 import org.library.model.User;
 import org.library.service.ProfessionService;
 import org.library.service.UserService;
-import org.library.serviceImpl.ProfessionServiceImpl;
-import org.library.serviceImpl.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -30,14 +31,24 @@ import org.springframework.web.multipart.MultipartFile;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 
 @Controller
 public class UserController
 {	
-	UserService userService = new UserServiceImpl();
-	ProfessionService professionService = new ProfessionServiceImpl();
+	UserService userService;
+	ProfessionService professionService;
 	
+	@Resource
+	public void setUserService(UserService userService)
+	{
+		this.userService = userService;
+	}
+	@Resource
+	public void setProfessionService(ProfessionService professionService)
+	{
+		this.professionService = professionService;
+	}
+
 	/**
 	 * 用户登录验证
 	 * 
@@ -45,14 +56,16 @@ public class UserController
 	 * @param password
 	 * @param model
 	 * @return
+	 * @throws IOException
 	 */
 	@RequestMapping(value="/ajaxLogin.htm",produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String loginAjax(@RequestParam String username,		
-			@RequestParam String password, HttpSession session)					
+			@RequestParam String password, HttpSession session) throws IOException				
 	{
 		User user = userService.findUser(username);
-		Gson gson = new Gson();
+		//Gson gson = new Gson();
+		ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
 		Info info = new Info();
 		String jsontext;
 
@@ -66,7 +79,7 @@ public class UserController
 				info.setStatus(200);
 				info.setUri("/myLibrary.htm");
 				info.setError("null");
-				jsontext = gson.toJson(info);
+				jsontext = mapper.writeValueAsString(info);
 				
 				return jsontext;		  
 			}
@@ -75,7 +88,7 @@ public class UserController
 				info.setStatus(200);
 				info.setUri("/adminLibrary.jsp");
 				info.setError("null");
-				jsontext = gson.toJson(info);
+				jsontext = mapper.writeValueAsString(info);
 				
 				return jsontext; 
 			}
@@ -84,7 +97,7 @@ public class UserController
 		info.setStatus(400);
 		info.setUri("null");
 		info.setError("登陆名或密码错误");
-		jsontext = gson.toJson(info);
+		jsontext = mapper.writeValueAsString(info);
 
 		return jsontext; 
 	}
@@ -121,84 +134,26 @@ public class UserController
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="/ajaxRegister.htm",produces="text/html;charset=UTF-8", method = RequestMethod.POST)
+	@RequestMapping(value="/register.htm", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String register(@ModelAttribute User user, HttpSession session, ModelMap model)
 	{
-		Gson gson = new Gson();
-		Info info = new Info();
-		String jsontext;
 		
-		String result = "";
-
-		System.out.println("started register"); 
-		
-		String username = user.getUsername();
-		String ps = user.getPassword();
-		String reps = user.getRepassword();
-		String email = user.getEmail();
-		String name = user.getName();
-		String unit = user.getUnit();
-		
-		if (null == username || "".equals(username))
-		{
-			result += " 用户名不可以为空！";
-		}
-		else if (username.length() < 4 || username.length() > 10)
-		{
-			result += " 用户名长度应该是4和10之间！";
-		}
-		// 密码的长度均须在4---10之间
-		if (!ps.equals(reps))
-		{
-			result += "密码不一致！";
-		}
-		if (ps == null || ps.length() < 4 || ps.length() > 10)
-		{
-			result += "密码的长度须在4---10之间！";
-		}
-		if (null == email || "".equals(email))
-		{
-			result += "邮箱不可以为空！";
-		}
-		if (null == name || "".equals(name))
-		{
-			result += "姓名不可以为空！";
-		}
-		if(null == unit || "".equals(unit))
-		{
-			result += "单位必需要填写！";
-		}
-
-		if (result == "")
-		{
 			user.setRole("student");// 默认角色的参数
 
 			userService.register(user);// 注册
 
 			session.setAttribute("result", "注册成功！");
-			
-			info.setStatus(200);
-			info.setUri("/registerSuccess.jsp");
-			jsontext = gson.toJson(info);
-			
-			return jsontext;
-		}
-
-		//session.setAttribute("result", result);
-
-		info.setStatus(400);
-		info.setError(result);
-		jsontext = gson.toJson(info);
 		
-		return jsontext;
+			return "/myLibrary.jsp";
 	}
 	
-	@RequestMapping(value = "/ajaxFindUser.htm",produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+	@RequestMapping(value = "/ajaxFindUser.htm",produces = "text/html;charset=UTF-8")
 	@ResponseBody
-	public String findUser(@RequestParam String username)
+	public String findUser(@RequestParam String username) throws IOException
 	{
-		Gson gson = new Gson();
+		//Gson gson = new Gson();
+		ObjectMapper mapper = new ObjectMapper();
 		Info info = new Info();
 		String jsontext;
 		
@@ -206,7 +161,8 @@ public class UserController
 		{
 			info.setStatus(400);
 			info.setError("用户名不可以为空");
-			jsontext = gson.toJson(info);
+			//jsontext = gson.toJson(info);
+			jsontext = mapper.writeValueAsString(info);
 			
 			return jsontext;
 		}
@@ -214,21 +170,24 @@ public class UserController
 		{
 			info.setStatus(400);
 			info.setError("用户名长度应该在4到10之间");
-			jsontext = gson.toJson(info);
+			//jsontext = gson.toJson(info);
+			jsontext = mapper.writeValueAsString(info);
 			
 			return jsontext;
 		}
 		if(userService.findUser(username) == null)
 		{
 			info.setStatus(200);
-			jsontext = gson.toJson(info);
+			//jsontext = gson.toJson(info);
+			jsontext = mapper.writeValueAsString(info);
 			
 			return jsontext;
 		}
 		
 		info.setStatus(400);
 		info.setError("该用户已存在");
-		jsontext = gson.toJson(info);
+		//jsontext = gson.toJson(info);
+		jsontext = mapper.writeValueAsString(info);
 		
 		return jsontext;
 	}
@@ -247,7 +206,7 @@ public class UserController
 	{
 		User user = (User)session.getAttribute("user");
 		
-		System.out.println(photo.getContentType() + "," + photo.getName() + "," + photo.getOriginalFilename());
+		System.out.println(photo.getContentType() + "、" + photo.getName() + "、 " + photo.getOriginalFilename());
 		
 		String realpath = "D:\\MyLibrary/upload/" + user.getUsername() + "/";
 		System.out.println(realpath);
@@ -258,7 +217,12 @@ public class UserController
 		FileUtils.copyInputStreamToFile(photo.getInputStream(), new File(realpath + fileName));
 		
 		//model.addAttribute("result", "头像上传成功!");
-		return "redirect:/myLibrary.jsp";
+		if(user.getRole().equals("student"))
+		{
+			return "redirect:/myLibrary.jsp";
+		}
+		else	//==admin
+			return  "redirect:/adminLibrary.jsp";
 	}
 	
 	/**
@@ -266,7 +230,7 @@ public class UserController
 	 * @param academy
 	 * @return
 	 */
-	@RequestMapping(value="select.htm", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+	@RequestMapping(value="select.htm", produces="text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String select(String academy) throws IOException
 	{
@@ -296,18 +260,18 @@ public class UserController
 	 * @param profession
 	 * @return
 	 */
-	@RequestMapping(value="select2.htm", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+	@RequestMapping(value="select2.htm",produces="application/json", method = RequestMethod.POST)
 	@ResponseBody
-	public String select2(@RequestParam String academy, @RequestParam String profession)
+	public Profession select2(@RequestParam String academy, @RequestParam String profession) throws IOException
 	{
-		Map<String, Object> map = new HashMap<String, Object>();
-		Gson gson = new Gson();
-		String jsontext;
+		/*ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+		String jsontext; */
+		 
+		Profession pro = professionService.findProfession(academy, profession);
+	/*	jsontext = mapper.writeValueAsString(pro);
+		System.out.println(jsontext);*/ 
 		
-		map = professionService.findProfession(academy, profession);
-		jsontext = gson.toJson(map);
-		
-		return jsontext;
+		return pro;
 	}
 
 	/**
@@ -322,9 +286,10 @@ public class UserController
 	@RequestMapping(value = "/changePasswd.htm",produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody
 	public String changePasswd(@RequestParam String password,
-			@RequestParam String newPassword, @RequestParam String repassword, HttpSession session)
+			@RequestParam String newPassword, @RequestParam String repassword, HttpSession session) throws IOException
 	{
-		Gson gson = new Gson();
+		ObjectMapper mapper = new ObjectMapper(); // can reuse, share globally
+		
 		Info info = new Info();
 		String jsontext;
 		
@@ -336,7 +301,7 @@ public class UserController
 		{
 			info.setStatus(400);
 			info.setError("原密码输入有误");
-			jsontext = gson.toJson(info);
+			jsontext = mapper.writeValueAsString(info);
 			
 			return jsontext;
 		}
@@ -345,7 +310,7 @@ public class UserController
 		{
 			info.setStatus(400);
 			info.setError("新密码的长度须在4---10之间");
-			jsontext = gson.toJson(info);
+			jsontext = mapper.writeValueAsString(info);
 			
 			return jsontext;
 		}
@@ -353,7 +318,7 @@ public class UserController
 		{
 			info.setStatus(400);
 			info.setError("两次密码不一致");
-			jsontext = gson.toJson(info);
+			jsontext = mapper.writeValueAsString(info);
 			
 			return jsontext;
 		}
@@ -370,7 +335,7 @@ public class UserController
 		
 		info.setStatus(200);
 		info.setUri("/success.jsp");
-		jsontext = gson.toJson(info);
+		jsontext = mapper.writeValueAsString(info);
 		
 		return jsontext;
 	}

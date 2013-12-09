@@ -1,13 +1,26 @@
-package org.library.serviceImpl;
+package org.library.service.impl;
 import java.util.List;
+
+import javax.annotation.Resource;
 
 import org.library.dao.Dao;
 import org.library.model.Book;
 import org.library.model.BookData;
 import org.library.service.LibraryService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service("libraryService")
+@Transactional
 public class LibraryServiceImpl implements LibraryService
 {
+	private Dao dao;
+	
+	@Resource(name="dao")
+	public void setDao(Dao dao)
+	{
+		this.dao = dao;
+	}
 
 	/**
 	 * 从数据库遍历书籍，检索。返回一本书籍的信息
@@ -18,7 +31,7 @@ public class LibraryServiceImpl implements LibraryService
 	{
 		String sql = "select * from book WHERE " + strSearchType + " LIKE '" + "%" + strText + "%" + "'";
 		
-		List<Book> list = (List<Book>)Dao.createSQLQuery(Book.class, sql);
+		List<Book> list = (List<Book>)dao.createSQLQuery(Book.class, sql).list();
 		
 		return list;
 	}
@@ -31,8 +44,7 @@ public class LibraryServiceImpl implements LibraryService
 	@Override
 	public Book getBookinfo(String callNumber)
 	{
-		Book book = new Book();
-		book = (Book)Dao.get(book, callNumber);
+		Book book = (Book)dao.get(Book.class, callNumber);
 		
 		return book;
 	}
@@ -46,7 +58,7 @@ public class LibraryServiceImpl implements LibraryService
 	{
 		String sql = "select * from bookdata WHERE callNumber='" + callNumber + "'";
 		
-		List<BookData> lists = (List<BookData>)Dao.createSQLQuery(BookData.class, sql);
+		List<BookData> lists = (List<BookData>)dao.createSQLQuery(BookData.class, sql).list();
 		
 		return lists;
 	}
@@ -56,11 +68,9 @@ public class LibraryServiceImpl implements LibraryService
 	 * 
 	 * @return
 	 */
-	@Override
 	public List<Book> getAllBooks()
 	{
-		
-		List<Book> books = (List<Book>)Dao.createSQLQuery(Book.class, "select * from book");
+		List<Book> books = (List<Book>)dao.createSQLQuery(Book.class, "select * from book").list();
 		
 		return books;
 	}

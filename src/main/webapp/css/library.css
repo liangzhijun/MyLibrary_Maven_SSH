@@ -1,0 +1,46 @@
+
+.UserMaster {
+min-height: 500px;
+height: auto;
+_height: 450px;
+min-width: 780px;
+width: 100%;
+_width: expression(document.body.clientWidth < 800? "780px": "auto");
+float: left;
+}
+#UserMasterLeft {
+width: 15%;
+float: left;
+border-right-style: solid;
+border-right-width: 1px;
+border-color: #ddd;
+height: 500px;
+background-color: #f5f5f5;
+}
+#UserMasterRight {
+width: 76%;
+float: left;
+padding: 10px;
+margin-left: 20px;
+}
+#userpagemenu {
+line-height: 30px;
+text-align: left;
+padding-left: 10px;
+padding-right: 10px;
+font-size: 13px;
+height: 100%;
+}
+#userpagemenu li {
+border-bottom: 1px solid #ddd;
+height: 28px;
+padding-bottom: 1px;
+margin-left: 10px;
+}
+.clear {
+border-top: 1px solid;
+clear: both;
+font-size: 1px;
+line-height: 0;
+}
+

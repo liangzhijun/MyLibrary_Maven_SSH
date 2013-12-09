@@ -8,18 +8,24 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Entity
 @Table(name="profession")
+//@JsonIgnoreProperties (value = { "hibernateLazyInitializer" ,  "academy" })  
 public class Profession
 {
 	private String id;
 	private String profession;
 	private String academyName;
 	private int classlist;
+	//@JsonIgnore
 	private Academy academy;
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="academyId")
+	//@JsonIgnore
 	public Academy getAcademy()
 	{
 		return academy;

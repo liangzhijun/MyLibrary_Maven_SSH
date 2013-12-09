@@ -148,25 +148,9 @@ body {
           </tr>
           
            <tr>
-            <td align="right">载体形态项: </td>
-            <td align="left"><input class="input" type="text" name="pages" size="20" style="width:300px"></td>
+            <td align="right">载体形态: </td>
+            <td align="left"><input class="input" type="text" name="page" size="20" style="width:300px"></td>
           </tr>
-          
-          <tr>
-            <td align="right">条码号</td>
-            <td align="left"><input class="input" type="text" name="barcode" size="20" style="width:300px"></td>
-          </tr>
-          
-          <tr>
-            <td align="right">书刊状态 </td>
-            <td align="left"><input class="input" type="text" name="condition" size="20" style="width:300px"></td>
-          </tr>
-          
-          <tr>
-            <td align="right">馆藏地 </td>
-            <td align="left"><input class="input" type="text" name="lib" size="20" style="width:300px"></td>
-          </tr>
-          
           <tr>
             <td align="right">书目录: </td>
             <td align="left"><textarea name="list" style="width:300px"></textarea></td>

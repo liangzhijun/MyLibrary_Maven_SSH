@@ -89,22 +89,6 @@ body {
             <td align="left">载体形态项： </td>
             <td align="left"><input class="input" type="text" name="page" value="${book.page}" size="20" style="width:300px"></td>
           </tr>
-          
-          <tr>
-            <td align="left">条码号：</td>
-            <td align="left"><input class="input" type="text" name="barcode" value="${book.barcode}" size="20" style="width:300px"></td>
-          </tr>
-          
-          <tr>
-            <td align="left">书刊状态 ：</td>
-            <td align="left"><input class="input" type="text" name="condition" value="${book.condition}" size="20" style="width:300px"></td>
-          </tr>
-          
-          <tr>
-            <td align="left">馆藏地： </td>
-            <td align="left"><input class="input" type="text" name="lib" value="${book.lib}" size="20" style="width:300px"></td>
-          </tr>
-          
           <tr>
             <td align="left">书目录： </td>
             <td align="left"><textarea name="list" style="width:300px">${book.list}</textarea></td>

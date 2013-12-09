@@ -86,7 +86,7 @@ clear: both;
 	</div>
 		
 		
-<form class="form-signin"  action="checkingUser.htm">
+<form class="form-signin">
 	<div id="content">
 		<div id="s_c_left">
 			<div class="itemtag">

@@ -9,6 +9,10 @@
 
 <!-- Le styles -->
 <link href="css/bootstrap.css" rel="stylesheet">
+<script type="text/javascript" src="/js/jquery-2.0.2.js"></script>
+<link rel="stylesheet" href="/validator/jquery.validator.css">
+<script type="text/javascript" src="/validator/jquery.validator.js"></script>
+<script type="text/javascript" src="/validator/local/zh_CN.js"></script>
 
 <style>
 body {
@@ -123,11 +127,11 @@ body {
 	
 		<h3 style="color: rgb(226, 106, 39)">修改个人密码</h3>
 		
-		<form class="form-signin" onsubmit="ajaxSubmit(); return false;" method="post">
+		<form class="jqtransform" onsubmit="ajaxSubmit(); return false;" method="post" autocomplete="off">
   	
-  	  	原密码 <input type="password" name="password" id="passwordID"> <br>
-  		新密码 <input type="password" name="newPassword" id="newPasswordID"> <br>
-  		确认密码<input type="password" name="repassword" id="repasswordID"> <div id="div1"></div> <br>
+  	  	原密码 <input type="password" id="passwordID" name="password" data-rule="required;password;"> <br>
+  		新密码 <input type="password" id="newPasswordID" name="user[pwd]" data-rule="密码: required;password"> <br>
+  		确认密码<input type="password" id="repasswordID" name="againPwd" data-rule="确认密码: required;match(user[pwd]);"> <div id="div1"></div> <br>
   		
   		<input class="btn btn-primary" type="submit" value="修 改">&nbsp;&nbsp;&nbsp;&nbsp;
   		<a class="btn" href="/myLibrary.jsp">返回</a>

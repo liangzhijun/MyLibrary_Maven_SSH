@@ -85,12 +85,12 @@ clear: both;
 	</div>
 		
 		
-<form class="form-signin"  action="checkingUser.htm">
+<form class="form-signin">
 	<div id="content">
 		<div id="s_c_left">
 			<div class="itemtag">
 				<ul id="search_button">
-					<li id="search_buttonblue"><ahref="item.php?marc_no=0000194710">&nbsp;&nbsp;书目信息&nbsp;&nbsp;</a>
+					<li id="search_buttonblue"><a href="item.php?marc_no=0000194710">&nbsp;&nbsp;书目信息&nbsp;&nbsp;</a>
 					</li>
 				</ul>
 				<div class="itemtag_num"></div>
@@ -129,7 +129,7 @@ clear: both;
 					<dl class="booklist">
 						<dt>个人责任者:</dt>
 						<dd>
-							<a href="openlink.php?author=%E5%94%90%E5%9D%9A">${requestScope.book.author}</a>&nbsp;编著
+							<a href="http://www.baidu.com/s?wd=${requestScope.book.author}">${requestScope.book.author}</a>&nbsp;编著
 						</dd>
 					</dl>
 					<dl class="booklist">
@@ -177,11 +177,11 @@ clear: both;
 			</c:if>
        	 <tbody>
           <tr>
-            <td align="center" class="whitetext" width="20%" bgcolor="#FFFFFF">${item.callNumber} </td>
+            <td align="center" class="whitetext" width="20%" bgcolor="#FFFFFF">${requestScope.book.callNumber} </td>
             <td align="center" class="whitetext" width="17%" bgcolor="#FFFFFF">${item.barcode}</td>
             <td align="center" class="whitetext" width="15%" bgcolor="#FFFFFF">2008&nbsp;</td>
-            <td align="center" class="whitetext" width="23%" bgcolor="#FFFFFF">${item.lib} </td>
-            <td align="center" class="whitetext" width="25%" bgcolor="#FFFFFF"><font color="green">${item.condition}</font></td>
+            <td align="center" class="whitetext" width="23%" bgcolor="#FFFFFF">${item.collection} </td>
+            <td align="center" class="whitetext" width="25%" bgcolor="#FFFFFF"><font color="green">${item.status}</font></td>
           </tr>
           
           </tbody>
@@ -196,7 +196,6 @@ clear: both;
 
 	</div>
 	
-
 </body>
 
 </html>

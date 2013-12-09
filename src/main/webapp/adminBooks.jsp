@@ -1,11 +1,11 @@
 <%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
- 
+
 <!DOCTYPE HTML>
 <html>
 <head>
 
-  
+
 <title>大学图书馆书目检索系统</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -16,16 +16,125 @@
 
 <link type="text/css" rel="stylesheet" href="css/base.css">
 <link type="text/css" rel="stylesheet" href="css/main.css">
+<script type="text/javascript" src="js/jquery-2.0.2.js"></script>
 
 <!-- Le styles -->
 <link href="css/bootstrap.css" rel="stylesheet">
+<link href="css/library.css" rel="stylesheet">
 
 <style>
 body {
 	padding-top: 60px;
 	/* 60px to make the container go all the way to the bottom of the topbar */
 }
+.hide{
+	display: none;
+}
+td.index {width: 3%;}
+td.title {text-align:left; width: 25%;}
+td.author {width: 15%;}
+td.publisher {width: 20%;}
+td.callNumber {width: 9%;}
+td.amount {width: 5%;}
+td.viewCount {width: 8%;}
 </style>
+
+<script type="text/javascript">
+
+	var pageIndex = 1;	  //当前页数
+	var pageCount = null;		  //总页数
+	var books = null;
+	var msg;
+	//var data = null;	  //data用于接收json格式的书本信息集合
+	//
+	
+	$(document).ready(function( ) 
+	{
+		$.getJSON("AjaxGetBooks.htm",function(result)		//使用异步获得所有的书本的内容信息, 返回json格式的数据
+		{
+			pageCount = result.pageCount;
+			books = result.books;
+			bind();
+			//alert(pageCount);
+			ChangeState();
+					
+			for(var i = 1; i <= pageCount; i++)
+			{
+				var option = "<option>" + i + "</option>";
+						
+				$("#pageselect").append(option);
+			};
+		});
+		
+		//ChangeState(-1, 1);
+		
+		$("#previous").click(function()		//上一页按钮click事件
+		{
+		     pageIndex -= 1;
+		     ChangeState();  
+		            
+		     if(pageIndex < 1)
+		     {
+		        pageIndex = 1;
+		        ChangeState();
+		     }
+		     else bind();   
+		});
+		        
+		$("#next").click(function()			//下一页按钮click事件
+		{
+		     pageIndex += 1;
+		            
+		     ChangeState();
+		     if(pageIndex > pageCount)
+		     {
+		         pageIndex = pageCount;
+		         ChangeState();
+		         alert("亲，这是最后一页了！");
+		     }
+		     else bind();           
+		});
+		        
+	});
+		
+		function bind()
+		{
+			$("[id=ready]").remove();
+			$("#template").removeClass("hide");
+			
+			for(var i = pageIndex*2 - 2; i < pageIndex*2 ; i++)
+		    {
+				var field = books[i];
+				
+		    		var row = $("#template").clone();
+		        	row.find("#indexId").text(i + 1);
+		        	row.find("#titleId").html('<a href="/bookinfo.htm?callNumber=' + field.callNumber + '">' + field.title +' </a>' );
+		        	row.find("#authorId").text(field.author);
+		        	row.find("#publisherId").text(field.publisher);
+		        	row.find("#callNumberId").text(field.callNumber);
+		        	row.find("#amountId").text(field.amount);
+		        	row.find("#viewCountId").text(1573);
+		        			                               
+		        	row.attr("id","ready");//改变绑定好数据的行的id
+		        	row.appendTo("#datas");//添加到模板的容器中
+		    };
+		    
+		    $("#template").addClass("hide");
+		};
+		
+	function ChangeState()	 //改变翻页按钮状态
+    {
+       	$("#pageinfo").html('<span id="pageinfo" style="color: red;"> ' + pageIndex + '</span>/'+ pageCount + '页&nbsp; ');
+        	
+    }
+	function showpagefl(index)
+	{
+		pageIndex = index;
+		ChangeState();
+		bind();
+	}
+        
+</script>
 
 </head>
 
@@ -54,9 +163,15 @@ body {
 						<li><a href="/adminLibrary.jsp">我的资料</a></li>
 					</ul>
 					<div style="color:#FFF; float:right; padding:5px 20px 0 0px">
-    					<c:if test="${sessionScope.status == null}"><a href="/signIn.jsp"><strong style="color:#fff;">登录</strong></a></c:if>
-    					<c:if test="${sessionScope.status == 'logined'}"><a href="/exit.htm"><strong style="color:#fff;">退出</strong></a></c:if>
-    				</div>
+						<c:if test="${sessionScope.status == null}">
+							<a href="/signIn.jsp"><strong style="color:#fff;">登录</strong>
+							</a>
+						</c:if>
+						<c:if test="${sessionScope.status == 'logined'}">
+							<a href="/exit.htm"><strong style="color:#fff;">退出</strong>
+							</a>
+						</c:if>
+					</div>
 				</div>
 				<!--/.nav-collapse -->
 			</div>
@@ -64,52 +179,97 @@ body {
 	</div>
 
 
-	<div id="content">
-  <div class="wrap">
-		<div id="underlinemenu"><ul><li><a href="?cls_no=A">A 马列主义、毛泽东思想、邓小平理论</a></li><li><a href="?cls_no=B">B 哲学、宗教</a></li><li><a href="?cls_no=C">C 社会科学总论</a></li><li><a href="?cls_no=D">D 政治、法律</a></li><li><a href="?cls_no=E">E 军事</a></li><li><a href="?cls_no=F">F 经济</a></li><li><a href="?cls_no=G">G 文化、科学、教育、体育</a></li><li><a href="?cls_no=H">H 语言、文字</a></li><li><a href="?cls_no=I">I 文学</a></li><li><a href="?cls_no=J">J 艺术</a></li><li><a href="?cls_no=K">K 历史、地理</a></li><li><a href="?cls_no=N">N 自然科学总论</a></li><li><a href="?cls_no=O">O 数理科学与化学</a></li><li><a href="?cls_no=P">P 天文学、地球科学</a></li><li><a href="?cls_no=Q">Q 生物科学</a></li><li><a href="?cls_no=R">R 医药、卫生</a></li><li><a href="?cls_no=S">S 农业科学</a></li><li><a href="?cls_no=T">T 工业技术</a></li><li><a href="?cls_no=U">U 交通运输</a></li><li><a href="?cls_no=V">V 航空、航天</a></li><li><a href="?cls_no=X">X 环境科学,安全科学</a></li><li><a href="?cls_no=Z">Z 综合性图书</a></li><li><a href="?cls_no=ALL"><b class="red">总体排行</b></a></li></ul></div>
-			<p class="box_bgcolor">分类：<font color="red">总体排行</font></p>
+	<div id="content" style="width:930px;">
+		<div class="wrap" style="width:930px;">
+			<div id="underlinemenu" style="width:928px;">
+				<ul>
+					<li><a href="?cls_no=A">A 马列主义、毛泽东思想、邓小平理论</a>
+					</li>
+					<li><a href="?cls_no=B">B 哲学、宗教</a>
+					</li>
+					<li><a href="?cls_no=C">C 社会科学总论</a>
+					</li>
+					<li><a href="?cls_no=D">D 政治、法律</a>
+					</li>
+					<li><a href="?cls_no=E">E 军事</a>
+					</li>
+					<li><a href="?cls_no=F">F 经济</a>
+					</li>
+					<li><a href="?cls_no=G">G 文化、科学、教育、体育</a>
+					</li>
+					<li><a href="?cls_no=H">H 语言、文字</a>
+					</li>
+					<li><a href="?cls_no=I">I 文学</a>
+					</li>
+					<li><a href="?cls_no=J">J 艺术</a>
+					</li>
+					<li><a href="?cls_no=K">K 历史、地理</a>
+					</li>
+					<li><a href="?cls_no=N">N 自然科学总论</a>
+					</li>
+					<li><a href="?cls_no=O">O 数理科学与化学</a>
+					</li>
+					<li><a href="?cls_no=P">P 天文学、地球科学</a>
+					</li>
+					<li><a href="?cls_no=Q">Q 生物科学</a>
+					</li>
+					<li><a href="?cls_no=R">R 医药、卫生</a>
+					</li>
+					<li><a href="?cls_no=S">S 农业科学</a>
+					</li>
+					<li><a href="?cls_no=T">T 工业技术</a>
+					</li>
+					<li><a href="?cls_no=U">U 交通运输</a>
+					</li>
+					<li><a href="?cls_no=V">V 航空、航天</a>
+					</li>
+					<li><a href="?cls_no=X">X 环境科学,安全科学</a>
+					</li>
+					<li><a href="?cls_no=Z">Z 综合性图书</a>
+					</li>
+					<li><a href="?cls_no=ALL"><b class="red">总体排行</b>
+					</a>
+					</li>
+				</ul>
+			</div>
+			<p class="box_bgcolor">
+				分类：<font color="red">总体排行</font>
+			</p>
 
-			<table border="0" width="100%" align="center" cellpadding="5" cellspacing="0" bgcolor="#CCCCCC">
+			<table style="width: 100%; text-align: center; background: #d8d8d8;" border="0">
 				<tr>
-					<td bgcolor="#d8d8d8" class="greytext" width="3%"></td>
-					<td bgcolor="#d8d8d8" class="greytext" width="25%">题名</td>
-					<td bgcolor="#d8d8d8" class="greytext" width="15%">责任者</td>
-					<td bgcolor="#d8d8d8" class="greytext" width="20%">出版信息</td>
-					<td bgcolor="#d8d8d8" class="greytext" width="12%">索书号</td>
-					<td bgcolor="#d8d8d8" class="greytext" width="10%">浏览次数</td>
+					<td width="3%">序号</td>
+					<td width="25%">题名</td>
+					<td width="15%">责任者</td>
+					<td width="20%">出版信息</td>
+					<td width="9%">索书号</td>
+					<td width="5%">数量</td>
+					<td width="8%">浏览次数</td>
+				</tr>
+				
+				
+			</table>
+
+			<table id="datas" style="width: 100%;  text-align: center;" border="1" >
+				<tr id="template">
+					<td class="index" id="indexId"></td>
+					<td class="title" id="titleId"></td>
+					<td class="author" id="authorId"></td>
+					<td class="publisher" id="publisherId"></td>
+					<td class="callNumber" id="callNumberId"></td>
+					<td class="amount" id="amountId"></td>
+					<td class="viewCount" id="viewCountId"></td>
 				</tr>
 			</table>
-				
-			<table border="1" width="100%" align="center" cellpadding="5"
-		cellspacing="0" bgcolor="#CCCCCC">
 
-		<c:forEach items="${list}" varStatus="i" var="item">
-			<c:if test="${i.index % 2 == 0}">
-				<tr align="center">
-			</c:if>
-			<c:if test="${i.index % 2 == 1}">
-				<tr align="center">
-			</c:if>
-
-			<tbody>
-
-				<tr>
-					<td bgcolor="#FFFFFF" class="whitetext" width="3%">${i.index + 1} </td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="25%"><a class="blue"
-						href="/bookinfo.htm?title=${item.title}" >${item.title}</a>
-					</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="15%">${item.author}</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="20%">${item.publisher}</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="12%">${item.callNumber}</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="10%">1573</td>
-				</tr>
-			<tbody>
-		</c:forEach>
-	</table>
-	
-  </div>
-  <div class="clear"></div>
-</div>
-
+		</div>
+		
+		<div class="pd tbr">
+			第<span id="pageinfo" >1页</span> 
+			  <a href="javascript:void(0)" id="previous">上一页</a>&nbsp; 
+			  <a href="javascript:void(0)" id="next">下一页</a> &nbsp;
+		转到第<select id="pageselect" onchange="showpagefl(this[this.selectedIndex].value)">
+		</select>
+		</div>
 </body>
 </html>

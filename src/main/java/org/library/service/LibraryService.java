@@ -10,8 +10,8 @@ public interface LibraryService
 	//从数据库遍历书籍，检索。返回一本书籍的信息
 	public List<Book> searchBooks(String strText, String strSearchType);
 	
-	//修改图书,接收参数String barcode(书本条形码)来获取书本的所有信息
-	public Book getBookinfo(String barcode);
+	//修改图书,接收参数String callNumber(索书号)来获取书本的所有信息
+	public Book getBookinfo(String callNumber);
 	
 	//从数据库遍历书籍，返回一书目的状态,数量等信息
 	public List<BookData> bookinfos(String title);

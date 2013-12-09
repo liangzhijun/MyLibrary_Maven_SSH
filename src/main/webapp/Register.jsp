@@ -10,6 +10,7 @@
 
 <!-- Le styles -->
 <link href="css/bootstrap.css" rel="stylesheet">
+<script type="text/javascript" src="js/jquery-2.0.2.js"></script>
 
 
 <style type="text/css">
@@ -48,136 +49,218 @@ body {
 	display: none;
 }
 
+.icon_delS {
+background-position: 0 -50px;
+background-position-x: 0px;
+background-position-y: -50px;
+}
+
 </style>
 
 <script type="text/javascript">
   		
 var xmlHttpRequest = null; //声明一个空对象以接收XMLHttpRequest对象
-var academy;
-var profession;
-var unit;
+var academy = null;
+var profession = null;
+var unit = null;
 
-function ajaxSubmit()
-{
-	if(window.ActiveXObject) // IE浏览器
+	var password;
+	var isError = "";
+
+	function ajaxSubmit()
 	{
-		xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-	}
-	else if(window.XMLHttpRequest) // 除IE外的其他浏览器实现
-	{
-		xmlHttpRequest = new XMLHttpRequest();
-	}
-	
-	if(null != xmlHttpRequest)//处理发送
-	{
-		var username = document.getElementById("usernameID").value;
-		var password = document.getElementById("passwordID").value;
-		var repassword = document.getElementById("repasswordID").value;
-		var email = document.getElementById("emailID").value;
-		var name = document.getElementById("nameID").value;
-		var mobilePhone = document.getElementById("mobilePhoneID").value;
-		var gender = document.getElementsByName("gender");
+		isError = false;
 		
-		if(gender[0].checked)
-			gender = gender[0].value;
-		else
-			gender = gender[1].value;
-			
-		xmlHttpRequest.open("POST", "/ajaxRegister.htm", true);
-		//关联好ajxa的回调函数
-		xmlHttpRequest.onreadystatechange = ajaxCallback;
+		findUser();
+		check_password();
+		check_repassword();
+		check_email();
+		check_name();
+		check_mobile();
 		
-		//真正向服务器端发送数据
-		// 使用post方式提交，必须要加上如下
-		xmlHttpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-		xmlHttpRequest.send("username="+ username + "&password=" + password + "&repassword=" + repassword + "&email=" + email + "&name=" + name + "&unit=" + unit + "&mobilePhone=" + mobilePhone + "&gender=" + gender);
-		
-	}
-}	
-  	
-  	function ajaxCallback()
-  	{		
-  		if(xmlHttpRequest.readyState == 4)
+		if(isError == true)
 		{
-			if(xmlHttpRequest.status == 200)//Http响应的状态
+			return false;
+		}
+		if(unit == null)
+		{
+			return false;
+		}
+			
+		else//isError == false, 表示交注用户信息没有错误，提交注册表！
+		{
+			var gender = document.getElementsByName("gender");
+			
+			var username = $("#username").val();
+			var password = $("#password").val();
+			var email = ("#email").val();
+			var name = $("#name").val();
+			var mobilePhone = $("mobilePhone").val();
+			if(gender[0].checked)
+				gender = gender[0].value;
+			else
+				gender = gender[1].value;
+			
+			$.ajax({
+				
+				type: "POST",
+				url: "register.htm",
+				dateType: "html",
+				data: {'username':username , 'password':password, 'email': email, 'name':name, 'unit':unit, 'mobilePhone': mobilePhone, 'gender': gender},
+				success: function(uri){
+					
+					window.location = uri;
+				}
+			});
+			
+			window.location = "/register.htm";	
+			return;
+		}
+		return true;
+	}
+		function findUser()
+		{
+			$.getJSON("ajaxFindUser.htm?username=" + $("#usernameID").val(),function(text)		//使用异步获得所有的书本的内容信息, 返回json格式的数据
+					{
+						var status = text.status; 	//status 作为状态码使用
+						var message = text.uri;
+						
+						if(status == 200)							//验证通过！
+						{
+							$("#td1").html("");
+							
+							//显示图片
+							$("#successImg").removeClass("hide");
+							
+							return;
+						}
+						
+						if(status == 400)						//返回的是错误信息
+						{
+							//隐藏图片
+							$("#successImg").addClass("hide");
+							
+							$("#td1").html(text.error);
+							
+							isError = true;
+							return;
+						}
+					});
+		};
+  			
+		function check_password()
+		{
+			//var passSize = $("#password").text();
+			 password = document.getElementById("password");
+			
+			if(password.value.length >= 4 && password.value.length <= 10)							//验证通过！
 			{
-				var responseTest = xmlHttpRequest.responseText;
-				var text = JSON.parse(responseTest);
-				var status = text.status; 	//status 作为状态码使用
-				var message = text.uri;
+				$("#td2").text("");
 				
-				if(status == 200)							//验证通过！返回的是登录用户角色相对应“URI”地址的字符串
-				{
-					window.location = text.uri;				//连接到用户成功注册后的页面uri
-					return;
-				}
-				
-				if(status == 400)						//返回的是错误
-				{
-					document.getElementById("div1").innerHTML =text.error;
-					return;
-				}
+				//显示图片
+				$("#passwordImg").removeClass("hide");
 			}
-		}		
-  	}
-  	
-	function findUser()
-	{
-		if(window.ActiveXObject) // IE浏览器
-		{
-			xmlHttpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+			else					//返回的是错误信息
+			{
+				//隐藏图片
+				$("#passwordImg").addClass("hide");
+				
+				$("#td2").html("密码长度需要在4和10之间！");
+				isError = true;
+			}
 		}
-		else if(window.XMLHttpRequest) // 除IE外的其他浏览器实现
+  				
+		function check_repassword()
 		{
-			xmlHttpRequest = new XMLHttpRequest();
+			//var passSize = $("#password").text();
+			 var repassword = document.getElementById("repassword");
+			
+			if(repassword.value.length < 4 || repassword.value.length > 10 || repassword.value != password.value)		//返回的是错误信息			
+			{
+				//隐藏图片
+				$("#repasswordImg").addClass("hide");
+				
+				$("#td3").html("两次输入密码不一致");
+				isError = true;
+			}
+			else						//验证通过！
+			{
+				$("#td3").text("");
+				
+				//显示图片
+				$("#repasswordImg").removeClass("hide");
+			}
 		}
 		
-		if(null != xmlHttpRequest)//处理发送
+		function check_email()
 		{
-			var username = document.getElementById("usernameID").value;
-			
-			xmlHttpRequest.open("POST", "/ajaxFindUser.htm", true);
-			//关联好ajxa的回调函数
-			xmlHttpRequest.onreadystatechange = ajaxCallback2;
-			
-			//真正向服务器端发送数据
-			// 使用post方式提交，必须要加上如下
-			xmlHttpRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-			xmlHttpRequest.send("username=" + username);
-		}
-	}
-	
-	function ajaxCallback2()
-	{
-		if(xmlHttpRequest.readyState == 4)
-		{
-			if(xmlHttpRequest.status == 200)//Http响应的状态
+			var temp = document.getElementById("email");
+			         //对电子邮件的验证
+			var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+			if(!myreg.test(temp.value))
 			{
-				var responseTest = xmlHttpRequest.responseText;
-				var text = JSON.parse(responseTest);
-				var status = text.status; 	//status 作为状态码使用
-				var message = text.uri;
+			 	//隐藏图片
+				$("#emailImg").addClass("hide");
 				
-				if(status == 200)							//验证通过！
-				{
-					document.getElementById("td1").innerHTML = "";	
+				$("#td4").html("提示\n\n请输入有效的E_mail！");
+				isError = true;
+		    }
+			else 
+			{
+				$("#td4").text("");
+				
+				//显示图片
+				$("#emailImg").removeClass("hide");
+			}
+			
+		}
+		
+		function check_name()
+		{
+			var name = $('#name').val();
+			
+		       if(name.search(/^[\u0391-\uFFE5\w]+$/) != -1)
+		       {
+		    	   $("#td5").text("");
 					
 					//显示图片
-					document.getElementById("successImg").className = "";
-					return;
-				}
-				
-				if(status == 400)						//返回的是错误信息
-				{
-					//隐藏图片
-					document.getElementById("successImg").className = "hide";
-					
-					document.getElementById("td1").innerHTML = text.error;
-					return;
-				}
-			}
+					$("#nameImg").removeClass("hide");   
+		       }
+		       else
+		       {    
+		    	 	//隐藏图片
+					$("#nameImg").addClass("hide");
+					$("#td5").html("姓名格式错误");
+					isError = true;
+		       }
 		}
-	}
+		
+		function check_mobile()
+		{
+			var temp = document.getElementById("mobilePhone");
+			
+			var mobile=/^((13[0-9]{1})|159|153)+\d{8}$/;
+			var mobile1=/^(13+\d{9})|(159+\d{8})|(153+\d{8})$/;
+			
+			if(!mobile.test(temp.value) || !mobile1.test(temp.value))
+			{
+			 	//隐藏图片
+				$("#mobileImg").addClass("hide");
+				
+				$("#td6").html("请输入有效的手机号码！");
+				isError = true;
+		    }
+			else 
+			{
+				$("#td6").text("");
+				
+				//显示图片
+				$("#mobileImg").removeClass("hide");
+			}
+			  
+			  
+		}
+		
 	
 	function Change_Select(){
 	    //当第一个下拉框的选项发生改变时调用该函数
@@ -185,7 +268,7 @@ function ajaxSubmit()
 	     
 	      profession = document.getElementById('two');
 	      
-	      if(academy == 0)
+	      if(academy == "null")
 	   	  {
 	    	  document.getElementById("two").className = "hide"; //隐藏第二个下拉框
 	    	  document.getElementById("three").className = "hide"; //隐藏第三个下拉框
@@ -210,11 +293,15 @@ function ajaxSubmit()
 		        req.send("academy=" + academy);
 		      }
 		  }
-	    function callback(){
-		      if(req.readyState ==4){
-		        if(req.status ==200){
+	    function callback()
+	    {
+		      if(req.readyState ==4)
+		      {
+		        if(req.status ==200)
+		        {
 		          parseMessage();
-		        }else{
+		        }else
+		        {
 		          alert("Not able to retrieve description" + req.statusText);
 		        }
 		      }
@@ -229,14 +316,15 @@ function ajaxSubmit()
 		      var street = document.getElementById('two');
 		      street.options.length=0;
 		      
-		      var option = new Option("--请选择--", 0);
+		      var option = new Option("--请选择--", "null");
 		      try{
 		          street.add(option);
 		        }
 		        catch(e){
 		        }
 		    
-		      for(var i = 0; i < size; i++){
+		      for(var i = 0; i < size; i++)
+		      {
 		    	var profession2 = profession[i].profession;
 		    	var id = profession[i].id;
 		    	  
@@ -254,7 +342,7 @@ function ajaxSubmit()
 	      function Change_Select2(){
 	      profession = document.getElementById('two').value;
 	      
-	      if(profession == 0)
+	      if(profession == "null")
 	      {
 	    	 document.getElementById("three").className = "hide"; //隐藏第三个下拉框
 	    	 return;
@@ -286,6 +374,7 @@ function ajaxSubmit()
 	    }
 	    function parseMessage2(){
 	      var responseTest = req.responseText;
+	      
 	      var test = JSON.parse(responseTest);
 	      var classlist = test.classlist;
 	      unit = test.unit;
@@ -293,7 +382,7 @@ function ajaxSubmit()
 	      var street = document.getElementById('three');
 	      street.options.length=0;
 	      
-	      var option = new Option("--请选择--", 0);
+	      var option = new Option("--请选择--", "null");
 	      try{
 	          street.add(option);
 	        }
@@ -326,7 +415,7 @@ function ajaxSubmit()
 	<div class="container">
 		<h2 style="color: rgb(226, 106, 39)">大学图书馆用户注册</h2>
 		
-		<form class="form-signin" onsubmit="ajaxSubmit(); return false;"  method="post">
+		<form class="form-signin"  onsubmit="ajaxSubmit(); return false;" method="post" >
 		
   		
   		<table width="95%" border="0" cellpadding="0" cellspacing="1">
@@ -335,27 +424,35 @@ function ajaxSubmit()
             		<td align="left">用户名 </td>
             		<td align="left"><input class="input" type="text" name="username" id="usernameID" onblur="findUser()" size="20" style="width:200px"></td>
             		<td align="left" id="successImg" class="hide"><img src="/img/success.png"></td>
-            		<td align="left" style="color: red; font-size: 13px;"  id="td1"></td>
+            		<td align="left" style="color: #e64141; font-size: 13px;"  id="td1"></td>
           		</tr>
           		
           		<tr>
-            		<td align="left">密   码 </td>
-            		<td align="left"><input class="input" type="password" name="password" id="passwordID" size="20" style="width:200px"></td>
+            		<td align="left">设置密码</td>
+            		<td align="left"><input class="input" type="password" name="password" id="password" onblur="check_password()" size="20" style="width:200px"></td>
+          			<td align="left" id="passwordImg" class="hide"><img src="/img/success.png"></td>
+            		<td align="left" class="icon_delS" style="color: #e64141; font-size: 13px;"  id="td2"></td>
           		</tr>
           		
           		<tr>
             		<td align="left">确认密码 </td>
-            		<td align="left"><input class="input" type="password" name="repassword" id="repasswordID" size="20" style="width:200px"></td>
+            		<td align="left"><input class="input" type="password" name="repassword" id="repassword" onblur="check_repassword()" size="20" style="width:200px"></td>
+          			<td align="left" id="repasswordImg" class="hide"><img src="/img/success.png"></td>
+            		<td align="left" style="color: #e64141; font-size: 13px;"  id="td3"></td>
           		</tr>
           		
           		<tr>
             		<td align="left">邮箱帐号 </td>
-            		<td align="left"><input class="input" type="text" name="email" id="emailID" size="20" style="width:200px"></td>
+            		<td align="left"><input class="input" type="text" name="email" id="email" onblur="check_email()" size="20" style="width:200px"></td>
+          			<td align="left" id="emailImg" class="hide"><img src="/img/success.png"></td>
+            		<td align="left" style="color: #e64141; font-size: 13px;"  id="td4"></td>
           		</tr>
           		
           		<tr>
             		<td align="left">姓 名 </td>
-            		<td align="left"><input class="input" type="text" name="name" id="nameID" size="20" style="width:200px"></td>
+            		<td align="left"><input class="input" type="text" name="name" id="name" onblur="check_name()" size="20" style="width:200px"></td>
+          			<td align="left" id="nameImg" class="hide"><img src="/img/success.png"></td>
+            		<td align="left" style="color: #e64141; font-size: 13px;"  id="td5"></td>
           		</tr>
           		
           		<tr>
@@ -367,7 +464,9 @@ function ajaxSubmit()
           		
           		<tr>
             		<td align="left">手机号码 </td>
-            		<td align="left"><input class="input" type="text" name="mobilePhone" id="mobilePhoneID" size="20" style="width:200px"></td>
+            		<td align="left"><input class="input" type="text" name="mobilePhone" id="mobilePhone" onblur="check_mobile()" size="20" style="width:200px"></td>
+          			<td align="left" id="mobileImg" class="hide"><img src="/img/success.png"></td>
+            		<td align="left" style="color: #e64141; font-size: 13px;"  id="td6"></td>
           		</tr>
   		 </tbody>
   		</table>
@@ -377,22 +476,24 @@ function ajaxSubmit()
           			<td align="left">单 位 </td>
   					<td align="left"><select name="one" id="one" onChange="Change_Select()" style="width: 130px">
    					<!--第一个下拉菜单-->
-   						<option value="0">请选择单位</option>
+   						<option value="null">请选择单位</option>
 						<option value="1">计算机学院</option>
 						<option value="2">土木工程学院</option>
 						<option value="3">外国语学院</option>
   					</select> <select name="two" id="two" onChange="Change_Select2()" class="hide" style="width: 120px">
    					<!--第二个下拉菜单-->
-   					<option value="0">--请选择--</option>
-  					</select> <select name="three" id="three" onChange="Change_Select3()" class="hide" style="width: 120px">
+   					<option value="null">--请选择--</option>
+  					</select> 
+  					<select name="three" id="three" onChange="Change_Select3()" class="hide" style="width: 120px">
    					<!--第三个下拉菜单-->
-   					<option value="0">--请选择--</option>
+   					<option value="null">--请选择--</option>
   					</select></td>
  				</tr>
  		</table>		
   	 
 		<div id="div1"></div>
   		<input class="btn btn-large btn-primary" type="submit" value="submit">
-  		
+  		</form>
+  		</div>
 </body>
 </html>

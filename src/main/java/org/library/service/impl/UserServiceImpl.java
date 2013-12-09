@@ -1,29 +1,40 @@
-package org.library.serviceImpl;
+package org.library.service.impl;
+
+import javax.annotation.Resource;
 
 import org.library.dao.Dao;
 import org.library.model.User;
 import org.library.service.UserService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-
+@Service("userService")
+@Transactional
 public class UserServiceImpl implements UserService
 {
+	private Dao dao;
 	
+	@Resource(name="dao")
+	public void setDao(Dao dao)
+	{
+		this.dao = dao;
+	}
+
 	/**
 	 * 注册
 	 * @param user 用户信息
 	 */
 	public void register(User user)
 	{
-		Dao.save(user);
+		dao.save(user);
 	}
 	
 	public void changePasswd(String username, String newPassword)
 	{
-		User user = new User();
-		user = (User)Dao.get(user, username);
+		User user = (User)dao.get(User.class, username);
 		
 		user.setPassword(newPassword);
-		Dao.update(user);
+		dao.update(user);
 
 	}
 
@@ -35,15 +46,14 @@ public class UserServiceImpl implements UserService
 	public void modifyUserinfo(String username, String mobilePhone,
 			String phone, String address, String email)
 	{
-		User user = new User();
-		user = (User)Dao.get(user, username);
+		User user = (User)dao.get(User.class, username);
 		
 		user.setMobilePhone(mobilePhone);
 		user.setPhone(phone);
 		user.setAddress(address);
 		user.setEmail(email);
 		
-		Dao.update(user);
+		dao.update(user);
 	}
 
 	/**
@@ -52,12 +62,9 @@ public class UserServiceImpl implements UserService
 	 * @param myUsername
 	 * @return
 	 */
-	@Override
 	public User findUser(String username)
 	{
-		User user = new User();
-		
-		user = (User)Dao.get(user, username);
+		User user = (User)dao.get(User.class, username);
 		
 		if(user != null)
 			return user;

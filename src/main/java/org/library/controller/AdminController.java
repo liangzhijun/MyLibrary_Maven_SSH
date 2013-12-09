@@ -2,6 +2,7 @@ package org.library.controller;
 
 import java.util.List;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 import org.library.model.Book;
@@ -9,9 +10,6 @@ import org.library.model.User;
 import org.library.service.AdminService;
 import org.library.service.LibraryService;
 import org.library.service.UserService;
-import org.library.serviceImpl.AdminServiceImpl;
-import org.library.serviceImpl.LibraryServiceImpl;
-import org.library.serviceImpl.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -24,10 +22,26 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class AdminController
 {
-	UserService userService = new UserServiceImpl();
-	AdminService adminService = new AdminServiceImpl();
-	LibraryService libraryService = new LibraryServiceImpl();
+	UserService userService;
+	AdminService adminService;
+	LibraryService libraryService;
 	
+	@Resource
+	public void setUserService(UserService userService)
+	{
+		this.userService = userService;
+	}
+	@Resource
+	public void setAdminService(AdminService adminService)
+	{
+		this.adminService = adminService;
+	}
+	@Resource
+	public void setLibraryService(LibraryService libraryService)
+	{
+		this.libraryService = libraryService;
+	}
+
 	/**
 	 * 管理者注册
 	 * @param username
@@ -186,7 +200,7 @@ public class AdminController
 	}
 	
 	/**
-	 * 删除图书
+	 * 删除图书_页面
 	 * @param model
 	 * @return  "books.htm";
 	 */
@@ -197,6 +211,18 @@ public class AdminController
 		model.addAttribute("list", list);
 		
 		return "deleteBooks";
+	}
+	
+	/** 删除书本
+	 * @param barcode
+	 * @return
+	 */
+	@RequestMapping(value="deleteBook.htm", method = RequestMethod.GET)
+	public String deleteBook(@RequestParam String callNumber)
+	{
+		adminService.deleteBook(callNumber);
+		
+		return "redirect:/deleteBooks.htm";
 	}
 	
 	/** 删除图书与检索
@@ -223,18 +249,6 @@ public class AdminController
 		return "result";
 	}
 	
-	/** 删除书本
-	 * @param barcode
-	 * @return
-	 */
-	@RequestMapping(value="deleteBook.htm", method = RequestMethod.GET)
-	public String deleteBook(@RequestParam String barcode)
-	{
-		adminService.deleteBook(barcode);
-		
-		return "redirect:/deleteBooks.htm";
-	}
-	
 	/**
 	 * 修改图书信息
 	 * @param barcode
@@ -242,11 +256,12 @@ public class AdminController
 	 * @return
 	 */
 	@RequestMapping(value="modifyBooks.htm")
-	public String modifyBooks(@RequestParam String barcode, HttpSession session, ModelMap model)
+	public String modifyBooks(@RequestParam String callNumber, HttpSession session, ModelMap model)
 	{
-		Book book = libraryService.getBookinfo(barcode);
+		Book book = libraryService.getBookinfo(callNumber);
 		model.addAttribute("book", book);
-		session.setAttribute("oldBarcode", barcode);	//将barcode以oldBarcode为name放到session中，作为修改书本的索引
+		
+		session.setAttribute("oldCallNumber", callNumber);
 		
 		return "modifyBook";
 	}
@@ -262,8 +277,6 @@ public class AdminController
 	 * @param pages
 	 * @param list
 	 * @param content
-	 * @param barcode
-	 * @param condition
 	 * @param lib
 	 * @param model
 	 * @return
@@ -271,6 +284,8 @@ public class AdminController
 	@RequestMapping(value="modifyBook.htm", method = RequestMethod.POST)
 	public String modifyBook(@ModelAttribute Book book, HttpSession session, Model model)
 	{
+		Book book2 = (Book)libraryService.getBookinfo((String)session.getAttribute("oldCallNumber"));
+		
 		String result = "";
 
 		String title = book.getTitle();
@@ -321,7 +336,17 @@ public class AdminController
 		}
 		if (result == "")
 		{
-			adminService.modifyBook(book, (String)session.getAttribute("oldBarcode"));// 将书目信息存入数据库
+			book2.setTitle(title);
+			book2.setAuthor(author);
+			book2.setPublisher(publisher);
+			book2.setCallNumber(callNumber);
+			book2.setISBNandPricing(ISBNandPricing);
+			book2.setSubject(subject);
+			book2.setPage(page);
+			book2.setList(list);
+			book2.setContent(content);
+			
+			adminService.modifyBook(book2, (String)session.getAttribute("oldCallNumber"));// 将书目信息存入数据库
 
 			model.addAttribute("result", "图书修改成功");
 			return "result";

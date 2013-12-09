@@ -131,13 +131,13 @@ body {
 				<tr>
 					<td bgcolor="#FFFFFF" class="whitetext" width="3%">${i.index + 1} </td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="25%"><a class="blue"
-						href="/bookinfo.htm?barcode=${item.barcode}&title=${item.title}" >${item.title}</a>
+						href="/bookinfo.htm?callNumber=${item.callNumber}&title=${item.title}" >${item.title}</a>
 					</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="13%">${item.author}</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="17%">${item.publisher}</td>
 					<td bgcolor="#FFFFFF" class="whitetext" width="11%">${item.callNumber}</td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="8%"><a class="blue" href="/deleteBook.htm?barcode=${item.barcode}">删除</a></td>
-					<td bgcolor="#FFFFFF" class="whitetext" width="8%"><a class="blue" href="/modifyBooks.htm?barcode=${item.barcode}">修改</a></td>
+					<td bgcolor="#FFFFFF" class="whitetext" width="8%"><a class="blue" href="/deleteBook.htm?callNumber=${item.callNumber}">删除</a></td>
+					<td bgcolor="#FFFFFF" class="whitetext" width="8%"><a class="blue" href="/modifyBooks.htm?callNumber=${item.callNumber}" >修改</a></td>
 				</tr>
 			<tbody>
 		</c:forEach>

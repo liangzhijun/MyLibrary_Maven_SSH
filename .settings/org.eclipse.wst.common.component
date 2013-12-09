@@ -3,6 +3,7 @@
     <wb-module deploy-name="MyLibrary_Maven">
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
         <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/cfg"/>
         <property name="java-output-path" value="/MyLibrary_Maven/src/main/webapp/src/main/java"/>
         <property name="context-root" value="/"/>
     </wb-module>

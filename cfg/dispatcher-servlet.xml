@@ -11,23 +11,25 @@
         http://www.springframework.org/schema/mvc
         http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd">
         
-		<mvc:annotation-driven/>	
+        <!-- 默认的注解映射的支持 --> 
+		<mvc:annotation-driven/>
+		<!-- 自动扫描的包名 -->  	
 		<context:component-scan base-package="org.library.controller"></context:component-scan>
-			
-		<mvc:resources location="/css/" mapping="/css/**"/>
-		<mvc:resources location="/js/" mapping="/js/**"/>
-		<mvc:resources location="/img/" mapping="/img/**"/>
-		
-		<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-			<property name="ViewClass" value="org.springframework.web.servlet.view.JstlView"></property>
-			<property name="prefix" value=""></property>
-			<property name="suffix" value=".jsp"></property>
-		</bean>
 		
 		<bean id="multipartResolver" class=" org.springframework.web.multipart.commons.CommonsMultipartResolver">
 			<property name="maxUploadSize" value="5000000"></property>
 		</bean>
-	
+		
+		<mvc:resources location="/css/" mapping="/css/**"/>
+		<mvc:resources location="/js/" mapping="/js/**"/>
+		<mvc:resources location="/img/" mapping="/img/**"/>
+		
+		<!-- 视图解释类 -->
+		<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+			<property name="ViewClass" value="org.springframework.web.servlet.view.JstlView"></property>
+			<property name="prefix" value=""></property>
+			<property name="suffix" value=".jsp"></property><!--可为空,方便实现自已的依据扩展名来选择视图解释类的逻辑  -->    
+		</bean>
 </beans>
 
 

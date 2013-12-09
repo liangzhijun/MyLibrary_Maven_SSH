@@ -37,7 +37,7 @@ public class Book
 		this.bookData = bookData;
 	}
 	@Id
-	@Column(name="callNamber")
+	@Column(name="callNumber")
 	public String getCallNumber()
 	{
 		return callNumber;
