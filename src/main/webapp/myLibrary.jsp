@@ -43,6 +43,7 @@ body {
 
 <body>
 
+	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container">
 				<button type="button" class="btn btn-navbar" data-toggle="collapse"
@@ -53,7 +54,7 @@ body {
 				<a class="brand">书目检索系统</a>
 				<div class="nav-collapse collapse">
 					<ul class="nav">
-						<li><a href="/Retrieval.jsp">书目检索</a>
+						<li><a href="#">书目检索</a>
 						</li>
 						<li><a href="#about">分类浏览</a>
 						</li>
@@ -68,6 +69,10 @@ body {
 						<li><a href="/myLibrary.jsp">我的图书馆</a>
 						</li>
 					</ul>
+					<div style="color:#FFF; float:right; padding:5px 20px 0 0px">
+    				<a href="/exit.htm"><strong style="color:#fff;">退出</strong></a>
+    				</div>
+				</div>
 				<!--/.nav-collapse -->
 			</div>
 		</div>

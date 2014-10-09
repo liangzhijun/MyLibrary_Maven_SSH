@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.library.model.Book;
 import org.library.model.BookData;
+import org.library.model.SystemLog;
 
 public interface LibraryService
 {
@@ -18,4 +19,7 @@ public interface LibraryService
 	
 	//从数据库遍历书籍，把书籍以一个book对象逐个放到一个List的集合,然后将List返回
 	public List<Book> getAllBooks();
+	
+	//保存系统日志
+	public void saveLog(SystemLog log);
 }

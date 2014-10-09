@@ -204,7 +204,7 @@ public class AdminController
 	 * @param model
 	 * @return  "books.htm";
 	 */
-	@RequestMapping("deleteBooks.htm")
+	@RequestMapping("/deleteBooks.htm")
 	public String deleteBooks(Model model)
 	{
 		List<Book> list = libraryService.getAllBooks();
@@ -217,7 +217,7 @@ public class AdminController
 	 * @param barcode
 	 * @return
 	 */
-	@RequestMapping(value="deleteBook.htm", method = RequestMethod.GET)
+	@RequestMapping(value="/deleteBook.htm", method = RequestMethod.GET)
 	public String deleteBook(@RequestParam String callNumber)
 	{
 		adminService.deleteBook(callNumber);
@@ -255,7 +255,7 @@ public class AdminController
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="modifyBooks.htm")
+	@RequestMapping(value="/modifyBooks.htm")
 	public String modifyBooks(@RequestParam String callNumber, HttpSession session, ModelMap model)
 	{
 		Book book = libraryService.getBookinfo(callNumber);
@@ -281,7 +281,7 @@ public class AdminController
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping(value="modifyBook.htm", method = RequestMethod.POST)
+	@RequestMapping(value="/modifyBook.htm", method = RequestMethod.POST)
 	public String modifyBook(@ModelAttribute Book book, HttpSession session, Model model)
 	{
 		Book book2 = (Book)libraryService.getBookinfo((String)session.getAttribute("oldCallNumber"));

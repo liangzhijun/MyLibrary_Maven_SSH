@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 
 import org.library.model.Book;
 import org.library.model.BookData;
+import org.library.model.SystemLog;
 import org.library.model.User;
 import org.library.service.LibraryService;
 import org.springframework.stereotype.Controller;
@@ -145,5 +146,17 @@ public class LibraryController
 			return "bookinfo";
 		
 		return "adminBookinfo";	//admin角色登录时，返回的jsp页面
+	}
+	
+	@RequestMapping(value = "/saveLog.htm")
+	public String saveLog(HttpSession session)
+	{
+		SystemLog log = (SystemLog)session.getAttribute("log");
+		
+		libraryService.saveLog(log);
+		
+		//return (String)session.getAttribute("requestURI");
+		
+		return null;
 	}
 }

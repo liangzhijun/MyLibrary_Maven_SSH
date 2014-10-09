@@ -6,6 +6,7 @@ import javax.annotation.Resource;
 import org.library.dao.Dao;
 import org.library.model.Book;
 import org.library.model.BookData;
+import org.library.model.SystemLog;
 import org.library.service.LibraryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,9 +71,19 @@ public class LibraryServiceImpl implements LibraryService
 	 */
 	public List<Book> getAllBooks()
 	{
+		@SuppressWarnings("unchecked")
 		List<Book> books = (List<Book>)dao.createSQLQuery(Book.class, "select * from book").list();
 		
 		return books;
+	}
+
+	/**
+	 * 保存系统日志信息
+	 */
+	@Override
+	public void saveLog(SystemLog log)
+	{
+		dao.save(log);
 	}
 
 }

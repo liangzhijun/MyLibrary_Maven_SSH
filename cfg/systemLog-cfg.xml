@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans>
+
+	<!-- 系统日志（输出、记录）必需配置 -->
+	<system:log path="/signIn.jsp" log-name="访问系统"/>
+	<system:log path="/myLibrary.htm" log-name="登录系统"/>
+	<system:log path="/adminLibrary.jsp" log-name="登录系统"/>
+	<system:log path="/booksEntering.jsp" log-name="录入图书"/>
+	<system:log path="/changePasswd.htm" log-name="用户修改密码"/>
+	<system:log path="/change_passwd.jsp" log-name="进入修改密码界面"/>
+	<system:log path="/deleteBook.htm" log-name="删除图书"/>
+	<system:log path="/deleteBooks.htm" log-name="进入删除图书页面"/>
+	<system:log path="/modifyBook.htm" log-name="修改图书"/>
+	<system:log path="/modifyBooks.htm" log-name="进入修改图书页面"/>
+	<system:log path="/modifyuserinfo.jsp" log-name="进入修改用户个人信息页面"/>
+	<system:log path="/modifyUserinfo.htm" log-name="用户修改个人信息"/>
+	<system:log path="/exit.htm" log-name="注销系统"/>
+
+</beans>
